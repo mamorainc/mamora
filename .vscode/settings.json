@@ -1,0 +1,32 @@
+{
+  // Enable format on save
+  "editor.formatOnSave": true,
+
+  // Enable linting on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.fixAll.eslint": "always"
+  },
+
+  // Default formatter (adjust as needed, e.g., for Prettier or ESLint)
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Set tab size for consistent indentation
+  "editor.tabSize": 2,
+
+  // Ensure consistent line endings
+  "files.eol": "\n",
+
+  // Trim trailing whitespace
+  "files.trimTrailingWhitespace": true,
+
+  // Ensure a final newline at the end of files
+  "files.insertFinalNewline": true,
+
+  // Control Prettier settings
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "es5",
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": false,
+  "prettier.bracketSpacing": true
+}
