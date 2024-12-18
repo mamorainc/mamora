@@ -1,3 +1,7 @@
 export default function Home() {
-  return <div className="text-3xl">Hello World</div>;
+  return (
+    <div className="flex h-screen items-center justify-center text-3xl">
+      <div>Mamora</div>
+    </div>
+  );
 }
