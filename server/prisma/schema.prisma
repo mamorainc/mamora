@@ -24,23 +24,26 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  sentChats     Chat[] @relation("Sender")
-  receivedChats Chat[] @relation("Receiver")
+  sentChats Chat[] @relation("Sender")
+  // receivedChats Chat[] @relation("Receiver")
 }
 
 model Chat {
   id String @id @default(uuid())
 
+  // receiver_id String
+  // receiver    User   @relation("Receiver", fields: [receiver_id], references: [id])
+
+  message  String
+  response String?
+
+  is_received Boolean @default(false)
+
   sender_id String
   sender    User   @relation("Sender", fields: [sender_id], references: [id])
-  
-  receiver_id String
-  receiver    User   @relation("Receiver", fields: [receiver_id], references: [id])
-
-  content String // Message content
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  @@index([sender_id, receiver_id])
+  // @@index([sender_id, receiver_id])
 }

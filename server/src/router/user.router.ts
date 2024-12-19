@@ -1,6 +1,7 @@
 import { Router } from "express";
 import prisma from "../db";
-import { User } from "@prisma/client";
+import { Keypair, PublicKey } from "@solana/web3.js";
+import bs58 from "bs58";
 
 const userRouter = Router();
 
@@ -27,11 +28,16 @@ userRouter.post("/signin", async (req, res) => {
   });
 
   if (!userData) {
+    const newKeyPair = Keypair.generate();
+    const pubkey = new PublicKey(newKeyPair.publicKey);
+    const privateKey = bs58.encode(newKeyPair.secretKey);
+
+
     userData = await prisma.user.create({
       data: {
         email: body.email,
-        private_key: "private_key",
-        public_key: "public_key",
+        private_key: privateKey,
+        public_key: pubkey.toString(),
       },
       select: {
         email: true,
