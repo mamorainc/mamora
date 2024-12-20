@@ -1,18 +1,62 @@
-import { Router } from "express";
-import prisma from "../db";
-import { Keypair, PublicKey } from "@solana/web3.js";
-import bs58 from "bs58";
+import { Router } from 'express';
+import prisma from '../db';
+import { Keypair, PublicKey } from '@solana/web3.js';
+import bs58 from 'bs58';
 
 const userRouter = Router();
 
-userRouter.get("/", (req, res) => {
+userRouter.get('/', (req, res) => {
   res.status(200).json({
-    message: "Success",
+    message: 'Success',
   });
 });
 
-userRouter.post("/signin", async (req, res) => {
-  const body = req.body;
+userRouter.post('/signup',async (req, res) => {
+
+  const {username,email,password} = req.body;
+
+  let userDate = await prisma.user.findFirst({
+    where: {
+      OR: [
+        {
+          email: email,
+        },
+        {
+          username: username,
+        }
+      ]
+    }
+  })
+
+
+  if(userDate){
+    res.status(411).send({
+      status:411,
+      message:"User is already there"
+    })
+  }
+
+  // userData = await prisma.user.create({
+  //   data: {
+  //     username: username,
+  //     email: email,
+  //     private_key: privateKey,
+  //     public_key: pubkey.toString(),
+  //   },
+  //   select: {
+  //     username: true,
+  //     email: true,
+  //     id: true,
+  //     public_key: true,
+  //     created_at: true,
+  //     updated_at: true,
+  //   },
+  // });
+
+})
+
+userRouter.post('/signin', async (req, res) => {
+  const { email, username } = req.body;
 
   var userData: {
     id: string;
@@ -23,7 +67,7 @@ userRouter.post("/signin", async (req, res) => {
     updated_at: Date;
   } | null = await prisma.user.findUnique({
     where: {
-      email: body.email,
+      email: email,
     },
   });
 
@@ -33,24 +77,10 @@ userRouter.post("/signin", async (req, res) => {
     const privateKey = bs58.encode(newKeyPair.secretKey);
 
 
-    userData = await prisma.user.create({
-      data: {
-        email: body.email,
-        private_key: privateKey,
-        public_key: pubkey.toString(),
-      },
-      select: {
-        email: true,
-        id: true,
-        public_key: true,
-        created_at: true,
-        updated_at: true,
-      },
-    });
   }
 
   res.status(200).json({
-    message: "Success",
+    message: 'Success',
     data: userData,
   });
 });
