@@ -1,8 +1,7 @@
+import { Toaster } from "@/components/ui/toaster";
 import "@/globals.css";
-import { AppWalletProvider } from "@/providers/app-wallet";
 import { ThemeProvider } from "@/providers/theme";
 import type { Metadata } from "next";
-import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Mamora",
@@ -23,7 +22,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppWalletProvider>{children}</AppWalletProvider>
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>
