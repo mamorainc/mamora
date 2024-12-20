@@ -2,6 +2,9 @@ import cors from "cors";
 import express from "express";
 import actionRouter from "./router/action.router";
 import userRouter from "./router/user.router";
+import { configDotenv } from "dotenv";
+configDotenv();
+
 
 const app = express();
 
@@ -27,6 +30,6 @@ app.use((req, res) => {
   });
 });
 
-app.listen(9000, () => {
+app.listen(process.env.PORT || 9000, () => {
   console.log(`app listening on http://localhost:9000`);
 });
