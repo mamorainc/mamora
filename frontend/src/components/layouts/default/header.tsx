@@ -12,7 +12,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-// import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
 import {
   NavigationMenu,
