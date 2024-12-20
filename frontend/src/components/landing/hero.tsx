@@ -19,12 +19,12 @@ const heroData = {
     "Your AI-powered companion for blockchain interactions, portfolio analysis, and market insights. Get smarter answers about your crypto assets across all chains.",
   buttons: {
     primary: {
-      text: "Join Waitlist",
-      action: "/waitlist",
+      text: "Connect Wallet",
+      action: "/",
     },
     secondary: {
-      text: "Try Demo",
-      action: "/demo",
+      text: "View All Features",
+      action: "/#features",
     },
   },
   image: {
