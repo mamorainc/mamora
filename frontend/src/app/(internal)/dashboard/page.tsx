@@ -304,19 +304,19 @@ export function TransactionsTab() {
     return {
       signature: sigInfo.signature,
       timestamp: sigInfo.blockTime ? sigInfo.blockTime * 1000 : Date.now(),
-      type: determineTxType(tx),
+      type: determineTxType(),
       status: tx.meta?.err ? "Failed" : "Success",
-      amount: extractAmount(tx),
+      amount: extractAmount(),
       token: "SOL", // Add token detection logic if needed
     };
   };
 
-  const determineTxType = (_tx: ParsedTransactionWithMeta): string => {
+  const determineTxType = (): string => {
     // Add your transaction type detection logic here
     return "Transfer";
   };
 
-  const extractAmount = (tx: ParsedTransactionWithMeta): number | undefined => {
+  const extractAmount = (): number | undefined => {
     // Add your amount extraction logic here
     return 0;
   };

@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { WalletButton } from "../wallet-button";
 
 const heroData = {
   badge: {
@@ -19,8 +18,8 @@ const heroData = {
     "Your AI-powered companion for blockchain interactions, portfolio analysis, and market insights. Get smarter answers about your crypto assets across all chains.",
   buttons: {
     primary: {
-      text: "Connect Wallet",
-      action: "/",
+      text: "Create Account",
+      action: "/signup",
     },
     secondary: {
       text: "View All Features",
@@ -62,8 +61,12 @@ export const Hero = () => {
             {heroData.description}
           </p>
 
-          <div className="flex items-center justify-center space-y-4 md:space-x-4 md:space-y-0">
-            <WalletButton />
+          <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row md:space-x-4 md:space-y-0">
+            <Button asChild className="w-5/6 font-bold md:w-1/4">
+              <Link href={heroData.buttons.primary.action}>
+                {heroData.buttons.primary.text}
+              </Link>
+            </Button>
 
             <Button
               asChild

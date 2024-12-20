@@ -17,7 +17,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { WalletButton } from "@/components/wallet-button";
 
 interface RouteProps {
   href: string;
@@ -84,13 +83,14 @@ export const Navbar = () => {
                     <Link href={href}>{label}</Link>
                   </Button>
                 ))}
-
-                <WalletButton
-                  style={{
-                    width: "100%",
-                    textAlign: "center",
-                  }}
-                />
+              </div>
+              <div className="flex flex-col justify-start items-start gap-4 mt-6">
+                <Button asChild variant={"secondary"} className="w-full">
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild className="w-full">
+                  <Link href="/signup">Get Started</Link>
+                </Button>
               </div>
             </div>
           </SheetContent>
@@ -113,7 +113,12 @@ export const Navbar = () => {
       </NavigationMenu>
 
       <div className="hidden items-center gap-4 lg:flex">
-        <WalletButton />
+        <Button asChild variant={"secondary"}>
+          <Link href="/login">Login</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/signup">Get Started</Link>
+        </Button>
       </div>
     </header>
   );
