@@ -4,7 +4,7 @@ import React from "react";
 
 const Page = () => {
   const { id } = useParams();
-  return <div>Page - {id}</div>;
+  return <div></div>;
 };
 
 export default Page;

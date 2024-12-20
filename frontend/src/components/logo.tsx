@@ -7,6 +7,7 @@ type Props = {
   classes?: {
     root?: string;
     logo?: string;
+    logoIcon?: string;
   };
   href?: string;
 };
@@ -22,8 +23,8 @@ export const Logo = ({ classes, href = "/" }: Props) => {
           "mr-2 flex size-9 items-center justify-center rounded-lg border border-secondary bg-gradient-to-tr from-primary via-primary/70 to-primary text-white",
           classes?.logo,
         )}
-      > 
-        <Box className="size-7" />
+      >
+        <Box className={cn("size-7", classes?.logoIcon)} />
       </div>
       Mamora
     </Link>

@@ -1,31 +1,16 @@
 import {
-    IconBarrierBlock,
-    IconBrowserCheck,
-    IconBug,
-    IconChecklist,
-    IconError404,
-    IconHelp,
-    IconLayoutDashboard,
-    IconLock,
-    IconLockAccess,
-    IconMessages,
-    IconNotification,
-    IconPackages,
-    IconPalette,
-    IconServerOff,
-    IconSettings,
+    IconBrowserCheck, IconHelp,
+    IconLayoutDashboard, IconLockAccess, IconNotification, IconPalette, IconSettings,
     IconTool,
-    IconUserCog,
-    IconUserOff,
-    IconUsers,
+    IconUserCog
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
     user: {
-        name: 'satnaing',
-        email: 'satnaingdev@gmail.com',
+        name: 'joe smith',
+        email: 'joe@gmail.com',
         avatar: '/avatars/shadcn.jpg',
     },
     teams: [

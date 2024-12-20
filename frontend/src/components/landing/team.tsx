@@ -27,7 +27,7 @@ export const Team = () => {
       imageUrl: "/assets/images/harsimranjit-dhaliwal.jpg",
       firstName: "Harsimranjit",
       lastName: "Dhaliwal",
-      positions: ["Gang Leader"],
+      positions: ["Software Engineer"],
       socialNetworks: [
         {
           name: "LinkedIn",
@@ -47,7 +47,7 @@ export const Team = () => {
       imageUrl: "/assets/images/0xnas.jpg",
       firstName: "0xnas",
       lastName: "",
-      positions: ["Software Engineer"],
+      positions: ["Software Engineer", "Gang Leader"],
       socialNetworks: [
         {
           name: "LinkedIn",
