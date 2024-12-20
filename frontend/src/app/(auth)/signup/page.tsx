@@ -58,11 +58,13 @@ export default function SignUp() {
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
-              Law Copilot cut our research time in half and improved our case
-              analysis accuracy by 40%. It&apos;s like having an entire legal
-              research team at your fingertips
+              The AI assistant simplified my crypto journey. Managing
+              multi-chain assets and understanding DeFi is now effortless. My
+              portfolio performance improved by 35% within weeks.
             </p>
-            <footer className="text-sm">~ Sarah Chen</footer>
+            <footer className="text-sm">
+              ~ Pranay Varma, Software Engineer
+            </footer>
           </blockquote>
         </div>
       </div>

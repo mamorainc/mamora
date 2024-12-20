@@ -27,8 +27,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { NavCollapsible, NavItem, NavLink, type NavGroup } from "./types";
-import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export function NavGroup({ title, items }: NavGroup) {
   const { state } = useSidebar();
