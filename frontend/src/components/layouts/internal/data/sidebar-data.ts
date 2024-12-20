@@ -50,7 +50,7 @@ export const sidebarData: SidebarData = {
                     icon: IconLockAccess,
                     items: [
                         {
-                            title: 'Create new',
+                            title: 'Create New',
                             url: '/chat',
                         },
                         {

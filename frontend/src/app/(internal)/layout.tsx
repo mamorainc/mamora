@@ -8,7 +8,7 @@ import { Header } from "@/components/layouts/internal/header";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Main } from "@/components/layouts/internal";
 import { Search } from "@/components/search";
-import { WalletButton } from "@/components/wallet-button";
+import { ProfileDropdown } from "@/components/profile-dropdown";
 
 export default function InternalLayout({ children }: { children: ReactNode }) {
   const defaultOpen = Cookies.get("sidebar:state") !== "false";
@@ -31,7 +31,7 @@ export default function InternalLayout({ children }: { children: ReactNode }) {
               <Search />
               <div className="ml-auto flex items-center space-x-4">
                 <ThemeToggle />
-                <WalletButton />
+                <ProfileDropdown />
               </div>
             </Header>
             <Main fixed>{children}</Main>
