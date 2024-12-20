@@ -13,6 +13,12 @@ export const callService = async (
 ): Promise<void> => {
   try {
     const result = await method(req);
+
+    const token = result?.data?.token;
+
+    if (token) {
+      res.cookie('authorization', token);
+    }
     res.status(result.status).json({
       status: result.status,
       message: result.message,

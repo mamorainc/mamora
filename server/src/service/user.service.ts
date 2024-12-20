@@ -1,79 +1,95 @@
-import { genSalt, hash } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcrypt';
 import prisma from '../db';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import bs58 from 'bs58';
 import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 
-type UserData = {
-  id: string;
-  email: string;
-  public_key: string;
-  private_key?: string;
-  created_at: Date;
-  updated_at: Date;
-  is_verified: boolean;
-} | null;
+type ServiceResponse = {
+  status: number;
+  message: string;
+  data: any;
+};
 
-const signUpService = async (
-  req: Request
-): Promise<{ status: number; message: string; data: any }> => {
+const createResponse = (
+  status: number,
+  message: string,
+  data: any = []
+): ServiceResponse => ({ status, message, data });
+
+const generateToken = (payload: object): string => {
+  const secretKey = process.env.JWT_SECRET;
+  if (!secretKey) {
+    throw new Error('Security token is required');
+  }
+  return jwt.sign(payload, secretKey);
+};
+
+const signUpService = async (req: Request): Promise<ServiceResponse> => {
   const { username, email, password } = req.body;
 
-  let userData: UserData = await prisma.user.findFirst({
-    where: { OR: [{ email: email }, { username: username }] },
+  const existingUser = await prisma.user.findFirst({
+    where: { OR: [{ email }, { username }] },
   });
 
-  if (userData) {
-    return { status: 411, message: 'Error: User is already exist', data: [] };
+  if (existingUser) {
+    return createResponse(409, 'Error: User already exists');
   }
 
   const newKeyPair = Keypair.generate();
-  const pubkey = new PublicKey(newKeyPair.publicKey);
+  const publicKey = new PublicKey(newKeyPair.publicKey);
   const privateKey = bs58.encode(newKeyPair.secretKey);
 
-  const hashPassword = await hash(privateKey, 10);
+  const hashedPassword = await hash(password, 10);
 
-  userData = await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
-      username: username,
-      password: hashPassword,
-      email: email,
+      username,
+      email,
+      password: hashedPassword,
       private_key: privateKey,
-      public_key: pubkey.toString(),
+      public_key: publicKey.toString(),
     },
     select: {
       id: true,
       username: true,
       email: true,
+      is_verified: true,
       public_key: true,
       created_at: true,
       updated_at: true,
-      is_verified: true,
     },
   });
 
-  const secreateKey = process.env.JWT_SECRET;
-  const data = { id: userData.id, email: userData.email };
+  const token = generateToken({ id: user.id, email: user.email });
 
-  if (!secreateKey) {
-    return {
-      data: [],
-      message: 'Security token is required',
-      status: 401,
-    };
-  }
-
-  const token = jwt.sign(data, secreateKey);
-
-  return {
-    status: 200,
-    message: 'Successfull User Created',
-    data: {
-      token: token,
-      userData: userData,
-    },
-  };
+  return createResponse(201, 'User created successfully', { token, user });
 };
 
-export { signUpService };
+const signInService = async (req: Request): Promise<ServiceResponse> => {
+  const { email, password } = req.body;
+
+  const user = await prisma.user.findFirst({
+    where: { email },
+  });
+
+  if (!user) {
+    return createResponse(404, 'Error: User not found');
+  }
+
+  const isValidPassword = await compare(password, user.password);
+  if (!isValidPassword) {
+    return createResponse(401, 'Error: Invalid password');
+  }
+
+  const token = generateToken({ id: user.id, email: user.email });
+
+  const { password: _, private_key, ...userWithoutPassword } = user;
+
+  return createResponse(200, 'User signed in successfully', {
+    token,
+    user: userWithoutPassword,
+  });
+};
+
+export { signUpService, signInService };

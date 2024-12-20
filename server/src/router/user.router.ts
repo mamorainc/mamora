@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { signUpService } from '../service/user.service';
+import { signInService, signUpService } from '../service/user.service';
 import { callService } from '../service/call.service';
 
 const userRouter = Router();
@@ -11,13 +11,11 @@ userRouter.get('/', (req, res) => {
 });
 
 userRouter.post('/signup', async (req, res) => {
-   callService(signUpService, req, res);
+  await callService(signUpService, req, res);
 });
 
 userRouter.post('/signin', async (req, res) => {
-  const { email, username } = req.body;
-
-
+  await callService(signInService, req, res);
 });
 
 export default userRouter;
