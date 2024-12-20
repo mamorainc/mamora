@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { ConnectWalletButton } from "../connect-wallet-button";
+import { WalletButton } from "../wallet-button";
 
 const heroData = {
   badge: {
@@ -63,7 +63,7 @@ export const Hero = () => {
           </p>
 
           <div className="flex items-center justify-center space-y-4 md:space-x-4 md:space-y-0">
-            <ConnectWalletButton />
+            <WalletButton />
 
             <Button
               asChild

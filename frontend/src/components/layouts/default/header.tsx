@@ -17,7 +17,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { ConnectWalletButton } from "@/components/connect-wallet-button";
+import { WalletButton } from "@/components/wallet-button";
 
 interface RouteProps {
   href: string;
@@ -85,7 +85,7 @@ export const Navbar = () => {
                   </Button>
                 ))}
 
-                <ConnectWalletButton
+                <WalletButton
                   style={{
                     width: "100%",
                     textAlign: "center",
@@ -113,7 +113,7 @@ export const Navbar = () => {
       </NavigationMenu>
 
       <div className="hidden items-center gap-4 lg:flex">
-        <ConnectWalletButton />
+        <WalletButton />
       </div>
     </header>
   );
