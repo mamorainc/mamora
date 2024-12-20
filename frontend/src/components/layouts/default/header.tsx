@@ -12,7 +12,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/theme-toggle";
+// import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
 import {
   NavigationMenu,
@@ -125,7 +125,7 @@ export const Navbar = () => {
             <SheetFooter className="flex-col items-start justify-start sm:flex-col">
               <Separator className="mb-2" />
 
-              <ThemeToggle />
+              {/* <ThemeToggle /> */}
             </SheetFooter>
           </SheetContent>
         </Sheet>
@@ -147,7 +147,7 @@ export const Navbar = () => {
       </NavigationMenu>
 
       <div className="hidden items-center gap-4 lg:flex">
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
 
         <Button size="sm">Connect Wallet</Button>
       </div>
