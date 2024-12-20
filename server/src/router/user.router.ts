@@ -1,58 +1,23 @@
-import { Router } from "express";
-import prisma from "../db";
-import { Keypair, PublicKey } from "@solana/web3.js";
-import bs58 from "bs58";
+import { Router } from 'express';
+import { signUpService } from '../service/user.service';
+import { callService } from '../service/call.service';
 
 const userRouter = Router();
 
-userRouter.get("/", (req, res) => {
+userRouter.get('/', (req, res) => {
   res.status(200).json({
-    message: "Success",
+    message: 'Success',
   });
 });
 
-userRouter.post("/signin", async (req, res) => {
-  const body = req.body;
+userRouter.post('/signup', async (req, res) => {
+   callService(signUpService, req, res);
+});
 
-  var userData: {
-    id: string;
-    email: string;
-    public_key: string;
-    private_key?: string;
-    created_at: Date;
-    updated_at: Date;
-  } | null = await prisma.user.findUnique({
-    where: {
-      email: body.email,
-    },
-  });
+userRouter.post('/signin', async (req, res) => {
+  const { email, username } = req.body;
 
-  if (!userData) {
-    const newKeyPair = Keypair.generate();
-    const pubkey = new PublicKey(newKeyPair.publicKey);
-    const privateKey = bs58.encode(newKeyPair.secretKey);
-
-
-    userData = await prisma.user.create({
-      data: {
-        email: body.email,
-        private_key: privateKey,
-        public_key: pubkey.toString(),
-      },
-      select: {
-        email: true,
-        id: true,
-        public_key: true,
-        created_at: true,
-        updated_at: true,
-      },
-    });
-  }
-
-  res.status(200).json({
-    message: "Success",
-    data: userData,
-  });
+  
 });
 
 export default userRouter;
