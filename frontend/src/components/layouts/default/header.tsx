@@ -43,35 +43,6 @@ const routeList: RouteProps[] = [
     label: "FAQs",
   },
 ];
-// const features: FeatureProps[] = [
-//   {
-//     title: "AI Chat Assistant",
-//     description:
-//       "Get instant answers about blockchain, your portfolio, and market trends",
-//   },
-//   {
-//     title: "Cross-Chain Support",
-//     description: "Seamlessly interact with multiple EVM-compatible blockchains",
-//   },
-//   {
-//     title: "Smart Swaps",
-//     description: "Execute token swaps with AI-powered price optimization",
-//   },
-//   {
-//     title: "Portfolio Analysis",
-//     description: "Track and analyze your crypto holdings across all chains",
-//   },
-//   {
-//     title: "Market Intelligence",
-//     description: "Real-time market data and trend analysis at your fingertips",
-//   },
-//   {
-//     title: "Smart Wallet",
-//     description:
-//       "Manage all your crypto assets with AI-powered insights and security",
-//   },
-// ];
-
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (

@@ -7,8 +7,8 @@ import Link from "next/link";
 
 const heroData = {
   badge: {
-    status: "BETA",
-    message: "Join the waitlist for early access!",
+    status: "LAUNCH",
+    message: "Beta version is live!",
   },
   heading: {
     prefix: "Experience the",
@@ -37,7 +37,7 @@ const heroData = {
 export const Hero = () => {
   return (
     <section className="container mx-auto w-full">
-      <div className="mx-auto grid place-items-center gap-8 py-20 md:py-32 lg:max-w-screen-xl">
+      <div className="mx-auto grid place-items-center gap-8 py-20 lg:max-w-screen-xl">
         <div className="space-y-8 text-center">
           <Badge variant="outline" className="py-2 text-sm">
             <span className="mr-2 text-primary">
