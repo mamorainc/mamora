@@ -27,7 +27,7 @@ export const Team = () => {
       imageUrl: "/assets/images/harsimranjit-dhaliwal.jpg",
       firstName: "Harsimranjit",
       lastName: "Dhaliwal",
-      positions: ["Software Engineer"],
+      positions: ["Gang Leader"],
       socialNetworks: [
         {
           name: "LinkedIn",
@@ -116,7 +116,10 @@ export const Team = () => {
   };
 
   return (
-    <section id="team" className="container mx-auto py-24 px-4 md:px-0 sm:py-32">
+    <section
+      id="team"
+      className="container mx-auto px-4 py-24 sm:py-32 md:px-0"
+    >
       <div className="mb-8 text-center">
         <h2 className="mb-2 text-center text-lg tracking-wider text-primary">
           Team
