@@ -71,3 +71,25 @@ html {
     @apply bg-background text-foreground;
   }
 }
+
+
+.wallet-adapter-button:hover {
+  background-color: color-mix(in srgb, hsl(var(--primary)) 90%, transparent);
+}
+
+.wallet-adapter-button:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.wallet-adapter-button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.wallet-adapter-button svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  pointer-events: none;
+}

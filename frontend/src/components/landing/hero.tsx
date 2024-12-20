@@ -1,9 +1,9 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ConnectWalletButton } from "../connect-wallet-button";
 
 const heroData = {
   badge: {
@@ -62,11 +62,8 @@ export const Hero = () => {
             {heroData.description}
           </p>
 
-          <div className="space-y-4 md:space-x-4 md:space-y-0">
-            <Button className="group/arrow w-5/6 font-bold md:w-1/4">
-              {heroData.buttons.primary.text}
-              <ArrowRight className="ml-2 size-5 transition-transform group-hover/arrow:translate-x-1" />
-            </Button>
+          <div className="flex items-center justify-center space-y-4 md:space-x-4 md:space-y-0">
+            <ConnectWalletButton />
 
             <Button
               asChild

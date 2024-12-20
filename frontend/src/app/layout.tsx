@@ -1,4 +1,5 @@
 import "@/globals.css";
+import { AppWalletProvider } from "@/providers/app-wallet";
 import { ThemeProvider } from "@/providers/theme";
 import type { Metadata } from "next";
 
@@ -21,7 +22,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <AppWalletProvider>{children}</AppWalletProvider>
         </ThemeProvider>
       </body>
     </html>

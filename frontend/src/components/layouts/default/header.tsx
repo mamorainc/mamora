@@ -4,12 +4,10 @@ import React, { useState } from "react";
 import {
   Sheet,
   SheetContent,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
@@ -19,6 +17,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { ConnectWalletButton } from "@/components/connect-wallet-button";
 
 interface RouteProps {
   href: string;
@@ -86,17 +85,14 @@ export const Navbar = () => {
                   </Button>
                 ))}
 
-                <Button size="sm" className="mt-4">
-                  Connect Wallet
-                </Button>
+                <ConnectWalletButton
+                  style={{
+                    width: "100%",
+                    textAlign: "center",
+                  }}
+                />
               </div>
             </div>
-
-            <SheetFooter className="flex-col items-start justify-start sm:flex-col">
-              <Separator className="mb-2" />
-
-              {/* <ThemeToggle /> */}
-            </SheetFooter>
           </SheetContent>
         </Sheet>
       </div>
@@ -117,9 +113,7 @@ export const Navbar = () => {
       </NavigationMenu>
 
       <div className="hidden items-center gap-4 lg:flex">
-        {/* <ThemeToggle /> */}
-
-        <Button size="sm">Connect Wallet</Button>
+        <ConnectWalletButton />
       </div>
     </header>
   );
