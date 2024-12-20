@@ -12,9 +12,9 @@ model User {
 
   username String @unique
 
-  email String @unique
+  email       String  @unique
   is_verified Boolean @default(false)
-  password String
+  password    String
 
   public_key  String
   private_key String // Ensure encryption at the application level
@@ -26,24 +26,38 @@ model User {
 }
 
 model Chat {
-  id String @id @default(uuid())
-  title String
-  userId String // Foriengn key
-  user User @relation(fields: [userId],references: [id])
-  messages Message[]
-  created_at DateTime @default(now())
+  id         String    @id @default(uuid())
+  title      String
+  user_id    String
+  user       User      @relation(fields: [user_id], references: [id])
+  messages   Message[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
 }
 
 model Message {
-  id String @id @default(uuid())
-  content String
-  chatId String
-  chat Chat @relation(fields: [chatId],references: [id])
-  sender Sender
-  createdAt DateTime @default(now())
+  id         String    @id @default(uuid())
+  content    String
+  chat_id    String
+  chat       Chat      @relation(fields: [chat_id], references: [id])
+  bot_reply  BotReply? @relation(name: "MessageToBotReply")
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
 }
 
-enum Sender {
-  USER
-  BOT
+model BotReply {
+  id         String      @id @default(uuid())
+  content    String?
+  status     ReplyStatus @default(PENDING)
+  message_id String      @unique
+  message    Message     @relation(fields: [message_id], references: [id], name: "MessageToBotReply")
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+}
+
+enum ReplyStatus {
+  PENDING
+  SENT
+  RECEIVED
+  FAILED
 }
