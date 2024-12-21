@@ -84,7 +84,7 @@ export const Navbar = () => {
                   </Button>
                 ))}
               </div>
-              <div className="flex flex-col justify-start items-start gap-4 mt-6">
+              <div className="mt-6 flex flex-col items-start justify-start gap-4">
                 <Button asChild variant={"secondary"} className="w-full">
                   <Link href="/login">Login</Link>
                 </Button>
