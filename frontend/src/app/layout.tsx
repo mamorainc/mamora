@@ -2,6 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import "@/globals.css";
 import { ThemeProvider } from "@/providers/theme";
 import type { Metadata } from "next";
+import { TanstackReactQueryProvider } from "@/providers/tanstack-react-query";
+import { AuthWrapper } from "@/components/auth-wrapper";
 
 export const metadata: Metadata = {
   title: "Mamora",
@@ -22,7 +24,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <TanstackReactQueryProvider>
+            <AuthWrapper>
+             {children}
+            </AuthWrapper>
+          </TanstackReactQueryProvider>
+
           <Toaster />
         </ThemeProvider>
       </body>
