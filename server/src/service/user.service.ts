@@ -4,6 +4,7 @@ import { Keypair, PublicKey } from '@solana/web3.js';
 import bs58 from 'bs58';
 import { Request } from 'express';
 import jwt from 'jsonwebtoken';
+// import { createResponse, ServiceResponse } from './call.service';
 
 type ServiceResponse = {
   status: number;
@@ -68,24 +69,18 @@ const signUpService = async (req: Request): Promise<ServiceResponse> => {
 
 const signInService = async (req: Request): Promise<ServiceResponse> => {
   const { email, password } = req.body;
-
   const user = await prisma.user.findFirst({
     where: { email },
   });
-
   if (!user) {
     return createResponse(404, 'Error: User not found');
   }
-
   const isValidPassword = await compare(password, user.password);
   if (!isValidPassword) {
     return createResponse(401, 'Error: Invalid password');
   }
-
   const token = generateToken({ id: user.id, email: user.email });
-
   const { password: _, private_key, ...userWithoutPassword } = user;
-
   return createResponse(200, 'User signed in successfully', {
     token,
     user: userWithoutPassword,
@@ -98,17 +93,13 @@ const getUserDetails = async (req: Request): Promise<ServiceResponse> => {
   const user = await prisma.user.findFirst({
     where: { id },
   });
-
   if (!user) {
     return createResponse(404, 'Error: User not found');
   }
-
   const { password: _, private_key, ...userData } = user;
-
   return createResponse(200, 'User Data', {
     user: userData,
   });
 };
-
 
 export { signUpService, signInService, getUserDetails };

@@ -30,3 +30,15 @@ export const callService = async (
     });
   }
 };
+
+export type ServiceResponse = {
+  status: number;
+  message: string;
+  data?: any;
+};
+
+export const createResponse = (
+  status: number,
+  message: string,
+  data: any = []
+): ServiceResponse => ({ status, message, data });

@@ -16,7 +16,7 @@ userRouter.get('/', (req, res) => {
 });
 
 userRouter.post('/signup', async (req, res) => {
-  await callService(signUpService, req, res);
+  return await callService(signUpService, req, res);
 });
 
 userRouter.post('/signin', async (req, res) => {
@@ -30,7 +30,6 @@ userRouter.post('/logout', async (req, res) => {
     message: 'Successfully logged out',
     data: [],
   });
-  // await callService(logoutService, req, res);
 });
 
 userRouter.get('/me', authMiddleware, async (req, res) => {
