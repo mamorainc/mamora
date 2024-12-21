@@ -17,6 +17,7 @@
     "@types/bs58": "^4.0.4",
     "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "bs58": "^6.0.0",
     "cookie-parser": "^1.4.7",
@@ -24,6 +25,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "solana-agent-kit": "^1.1.0",
     "tsx": "^4.19.2",
     "zod": "^3.24.1"
   },
