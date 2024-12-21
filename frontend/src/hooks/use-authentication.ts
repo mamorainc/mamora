@@ -56,7 +56,6 @@ export function useRegister(callbacks?: AuthHookOptions) {
 }
 
 export function useLogin(callbacks?: AuthHookOptions) {
-    const router = useRouter()
     const setAuth = useAuth((state) => state.setAuth)
 
     return useMutation({
@@ -76,7 +75,6 @@ export function useLogin(callbacks?: AuthHookOptions) {
                 if (callbacks?.onSuccess) {
                     callbacks?.onSuccess()
                 }
-                router.push('/')
             }
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -96,6 +94,7 @@ export function useLogin(callbacks?: AuthHookOptions) {
 
 
 export function useLogout(callbacks?: AuthHookOptions) {
+    const router = useRouter()
     const { logout } = useAuth()
 
     return useMutation({
@@ -105,6 +104,7 @@ export function useLogout(callbacks?: AuthHookOptions) {
         },
         onSuccess: () => {
             logout()
+            router.push('/')
             if (callbacks?.onSuccess) {
                 callbacks?.onSuccess()
             }
