@@ -1,11 +1,11 @@
 import { Router } from 'express';
+import { authMiddleware } from '../middleware';
+import { callService } from '../service/call.service';
 import {
   getUserDetails,
   signInService,
   signUpService,
 } from '../service/user.service';
-import { callService } from '../service/call.service';
-import { authMiddleware } from '../middleware';
 
 const userRouter = Router();
 

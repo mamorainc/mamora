@@ -1,9 +1,9 @@
-import { compare, genSalt, hash } from 'bcrypt';
-import prisma from '../db';
 import { Keypair, PublicKey } from '@solana/web3.js';
+import { compare, hash } from 'bcrypt';
 import bs58 from 'bs58';
 import { Request } from 'express';
 import jwt from 'jsonwebtoken';
+import prisma from '../db';
 // import { createResponse, ServiceResponse } from './call.service';
 
 type ServiceResponse = {
@@ -102,4 +102,4 @@ const getUserDetails = async (req: Request): Promise<ServiceResponse> => {
   });
 };
 
-export { signUpService, signInService, getUserDetails };
+export { getUserDetails, signInService, signUpService };
