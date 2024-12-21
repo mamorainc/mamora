@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/providers/theme";
 import type { Metadata } from "next";
 import { TanstackReactQueryProvider } from "@/providers/tanstack-react-query";
 import { AuthWrapper } from "@/components/auth-wrapper";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
   title: "Mamora",
@@ -26,7 +27,7 @@ export default function RootLayout({
         >
           <TanstackReactQueryProvider>
             <AuthWrapper>
-             {children}
+              <TooltipProvider>{children}</TooltipProvider>
             </AuthWrapper>
           </TanstackReactQueryProvider>
 

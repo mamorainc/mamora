@@ -4,13 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import {
   Banknote,
   Brain,
@@ -20,6 +14,11 @@ import {
 } from "lucide-react";
 import { MessageFormData, messageSchema } from "./schema";
 import { useRouter } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function CreateChatForm() {
   const router = useRouter();
@@ -91,12 +90,22 @@ export function CreateChatForm() {
                     />
                   </FormControl>
                   <div className="absolute bottom-4 right-2">
-                    <Button type="submit" size="icon" disabled={isSubmitting}>
-                      <Send className="size-4" />
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="submit"
+                          size="icon"
+                          disabled={isSubmitting}
+                        >
+                          <Send className="size-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Send Message</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                 </div>
-                <FormMessage />
               </FormItem>
             )}
           />

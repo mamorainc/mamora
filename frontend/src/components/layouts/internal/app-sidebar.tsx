@@ -1,9 +1,11 @@
+"use client";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { NavGroup } from "./nav-group";
 import { NavUser } from "./nav-user";
@@ -11,10 +13,11 @@ import { sidebarData } from "./data/sidebar-data";
 import { Logo } from "@/components/logo";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { open } = useSidebar();
   return (
     <Sidebar collapsible="icon" variant="sidebar" {...props}>
       <SidebarHeader>
-        <Logo href="/dashboard" />
+        <Logo isSidebarOpen={open} href="/dashboard" />
       </SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((props) => (
