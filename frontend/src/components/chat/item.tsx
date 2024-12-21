@@ -78,7 +78,7 @@ type ChatItemSenderAvatarProps = React.HTMLAttributes<HTMLDivElement> & {
   src?: string;
   icon?: "user" | "assistant";
 };
-const ChatItemSenderAvatar = React.forwardRef<
+const   ChatItemSenderAvatar = React.forwardRef<
   HTMLDivElement,
   ChatItemSenderAvatarProps
 >((props, ref) => {
@@ -88,8 +88,7 @@ const ChatItemSenderAvatar = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "!aspect-square size-8 rounded-full border-2 border-border bg-[#27272A] sm:size-10 lg:flex",
-        // lg:h-12 lg:w-12
+        "!aspect-square size-8 rounded-full border-2 border-border bg-[#27272A] sm:size-10 hidden md:flex",
       )}
     >
       {src ? (
