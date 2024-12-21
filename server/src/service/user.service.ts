@@ -92,4 +92,26 @@ const signInService = async (req: Request): Promise<ServiceResponse> => {
   });
 };
 
-export { signUpService, signInService };
+const getUserDetails = async (req: Request): Promise<ServiceResponse> => {
+  const id = req.userId;
+
+  const user = await prisma.user.findFirst({
+    where: { id },
+  });
+
+  if (!user) {
+    return createResponse(404, 'Error: User not found');
+  }
+
+  const { password: _, private_key, ...userData } = user;
+
+  return createResponse(200, 'User Data', {
+    user: userData,
+  });
+};
+
+const logOutService = async() =>{
+  
+}
+
+export { signUpService, signInService, getUserDetails };
