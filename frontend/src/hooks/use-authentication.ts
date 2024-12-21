@@ -96,7 +96,6 @@ export function useLogin(callbacks?: AuthHookOptions) {
 
 
 export function useLogout(callbacks?: AuthHookOptions) {
-    const router = useRouter()
     const { logout } = useAuth()
 
     return useMutation({
@@ -106,7 +105,6 @@ export function useLogout(callbacks?: AuthHookOptions) {
         },
         onSuccess: () => {
             logout()
-            router.push('/')
             if (callbacks?.onSuccess) {
                 callbacks?.onSuccess()
             }
