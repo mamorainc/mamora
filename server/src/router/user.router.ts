@@ -1,58 +1,39 @@
-import { Router } from "express";
-import prisma from "../db";
-import { Keypair, PublicKey } from "@solana/web3.js";
-import bs58 from "bs58";
+import { Router } from 'express';
+import {
+  getUserDetails,
+  signInService,
+  signUpService,
+} from '../service/user.service';
+import { callService } from '../service/call.service';
+import { authMiddleware } from '../middleware';
 
 const userRouter = Router();
 
-userRouter.get("/", (req, res) => {
+userRouter.get('/', (req, res) => {
   res.status(200).json({
-    message: "Success",
+    message: 'Success',
   });
 });
 
-userRouter.post("/signin", async (req, res) => {
-  const body = req.body;
+userRouter.post('/signup', async (req, res) => {
+  return await callService(signUpService, req, res);
+});
 
-  var userData: {
-    id: string;
-    email: string;
-    public_key: string;
-    private_key?: string;
-    created_at: Date;
-    updated_at: Date;
-  } | null = await prisma.user.findUnique({
-    where: {
-      email: body.email,
-    },
-  });
+userRouter.post('/signin', async (req, res) => {
+  await callService(signInService, req, res);
+});
 
-  if (!userData) {
-    const newKeyPair = Keypair.generate();
-    const pubkey = new PublicKey(newKeyPair.publicKey);
-    const privateKey = bs58.encode(newKeyPair.secretKey);
-
-
-    userData = await prisma.user.create({
-      data: {
-        email: body.email,
-        private_key: privateKey,
-        public_key: pubkey.toString(),
-      },
-      select: {
-        email: true,
-        id: true,
-        public_key: true,
-        created_at: true,
-        updated_at: true,
-      },
-    });
-  }
-
+userRouter.post('/logout', async (req, res) => {
+  res.clearCookie('authorization');
   res.status(200).json({
-    message: "Success",
-    data: userData,
+    status: 200,
+    message: 'Successfully logged out',
+    data: [],
   });
+});
+
+userRouter.get('/me', authMiddleware, async (req, res) => {
+  await callService(getUserDetails, req, res);
 });
 
 export default userRouter;

@@ -11,11 +11,9 @@ model User {
   id String @id @default(uuid())
 
   username String @unique
-
-  email       String  @unique
+  email    String @unique
   is_verified Boolean @default(false)
   password    String
-
   public_key  String
   private_key String // Ensure encryption at the application level
 
