@@ -17,6 +17,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { useAuth } from "@/stores/use-auth";
 
 interface RouteProps {
   href: string;
@@ -43,6 +44,7 @@ const routeList: RouteProps[] = [
 ];
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
   return (
     <header className="sticky top-5 z-40 mx-auto flex w-[90%] items-center justify-between rounded-2xl border border-secondary bg-card bg-opacity-15 p-2 shadow-inner md:w-[70%] lg:w-[75%] lg:max-w-screen-xl">
       <Logo />
@@ -113,12 +115,21 @@ export const Navbar = () => {
       </NavigationMenu>
 
       <div className="hidden items-center gap-4 lg:flex">
-        <Button asChild variant={"secondary"}>
-          <Link href="/login">Login</Link>
-        </Button>
-        <Button asChild>
-          <Link href="/signup">Get Started</Link>
-        </Button>
+        {isAuthenticated ? (
+          <Button asChild>
+            <Link href="/dashboard">Open Dashboard</Link>
+          </Button>
+        ) : (
+          <>
+            {" "}
+            <Button asChild variant={"secondary"}>
+              <Link href="/login">Login</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/signup">Get Started</Link>
+            </Button>{" "}
+          </>
+        )}
       </div>
     </header>
   );

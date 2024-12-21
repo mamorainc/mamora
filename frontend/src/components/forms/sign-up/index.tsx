@@ -17,12 +17,19 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { SignUpFormData, signUpformSchema } from "./schema";
+import { useRegister } from "@/hooks/use-authentication";
 
 type SignUpFormProps = HTMLAttributes<HTMLDivElement>;
 
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
-  const { toast } = useToast();
   const router = useRouter();
+  const { mutate: register, isPending } = useRegister({
+    onSuccess() {
+      form.reset();
+      router.replace(`/dashboard`);
+    },
+  });
+  const { toast } = useToast();
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpformSchema),
     defaultValues: {
@@ -33,11 +40,14 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
   });
 
   function onSubmit(data: SignUpFormData) {
-    console.log(data);
+    register({
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    });
     toast({
       title: "Sign Up Completed!",
     });
-    router.replace("/dashboard");
   }
 
   return (
@@ -97,7 +107,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 </FormItem>
               )}
             />
-            <Button className="mt-2">Create Account</Button>
+            <Button className="mt-2" disabled={isPending}>
+              {isPending ? "Creating..." : "Create Account"}
+            </Button>
 
             {/* <div className="relative my-2">
               <div className="absolute inset-0 flex items-center">
