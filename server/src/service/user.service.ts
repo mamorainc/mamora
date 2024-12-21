@@ -110,8 +110,5 @@ const getUserDetails = async (req: Request): Promise<ServiceResponse> => {
   });
 };
 
-const logOutService = async() =>{
-  
-}
 
 export { signUpService, signInService, getUserDetails };
