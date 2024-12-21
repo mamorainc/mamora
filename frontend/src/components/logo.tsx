@@ -1,8 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Box } from "lucide-react";
 import Link from "next/link";
-import React from "react";
-import { useSidebar } from "./ui/sidebar";
 
 type Props = {
   classes?: {
@@ -14,7 +12,6 @@ type Props = {
 };
 
 export const Logo = ({ classes, href = "/" }: Props) => {
-  const { open } = useSidebar();
   return (
     <Link
       href={href}
@@ -22,13 +19,13 @@ export const Logo = ({ classes, href = "/" }: Props) => {
     >
       <div
         className={cn(
-          "mr-2 flex !size-9 !aspect-square items-center justify-center rounded-lg border border-secondary bg-gradient-to-tr from-primary via-primary/70 to-primary text-white",
+          "mr-2 flex !aspect-square !size-9 items-center justify-center rounded-lg border border-secondary bg-gradient-to-tr from-primary via-primary/70 to-primary text-white",
           classes?.logo,
         )}
       >
         <Box className={cn("size-7", classes?.logoIcon)} />
       </div>
-      {open ? "Mamora" : null}
+      Mamora
     </Link>
   );
 };

@@ -14,7 +14,7 @@ import {
 export function ProfileDropdown() {
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild >
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="size-10">
             <AvatarImage src="/avatars/01.png" alt="@shadcn" />

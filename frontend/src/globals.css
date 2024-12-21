@@ -88,7 +88,6 @@ html {
   }
 }
 
-
 .wallet-adapter-button:hover {
   background-color: color-mix(in srgb, hsl(var(--primary)) 90%, transparent);
 }
