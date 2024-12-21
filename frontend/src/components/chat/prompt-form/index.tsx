@@ -41,8 +41,8 @@ export function PromptForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background pl-2 pr-10 sm:rounded-md sm:border sm:pl-4 sm:pr-14">
-            {/* <Tooltip>
+          <div className="relative flex max-h-[50vh] border-t w-full grow flex-col overflow-hidden bg-background pl-2 pr-10 sm:rounded-md sm:border sm:pl-4 sm:pr-14"> 
+            {/* <Tooltip> 
               <TooltipTrigger asChild>
                 <Button
                   variant="outline"
@@ -85,7 +85,7 @@ export function PromptForm() {
               )}
             />
 
-            <div className="absolute right-0 top-[13px] sm:right-4">
+            <div className="absolute right-2 top-[13px] sm:right-4">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button type="submit" size="icon">
