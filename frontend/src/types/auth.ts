@@ -1,5 +1,5 @@
 export interface RegisterRequest {
-    name: string
+    username: string
     email: string
     password: string
 }
@@ -16,7 +16,11 @@ export interface AuthResponse {
 }
 
 export interface User {
-    id: string;
-    name: string;
+    created_at: string;
     email: string;
+    id: string; 
+    is_verified: boolean;
+    public_key: string;
+    updated_at: string;
+    username: string;
 }

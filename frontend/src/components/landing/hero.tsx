@@ -1,6 +1,7 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/stores/use-auth";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -34,6 +35,7 @@ const heroData = {
 };
 
 export const Hero = () => {
+  const isAuthenticated = useAuth((state) => state.isAuthenticated)
   return (
     <section className="container mx-auto w-full">
       <div className="mx-auto grid place-items-center gap-8 py-20 lg:max-w-screen-xl">
@@ -61,10 +63,10 @@ export const Hero = () => {
             {heroData.description}
           </p>
 
-          <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row md:space-x-4 md:space-y-0">
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button asChild className="w-5/6 font-bold md:w-1/4">
-              <Link href={heroData.buttons.primary.action}>
-                {heroData.buttons.primary.text}
+              <Link href={isAuthenticated ? "/dashboard" : "/signup"}>
+                {isAuthenticated ? "Open Dashboard" : heroData.buttons.primary.text}
               </Link>
             </Button>
 
