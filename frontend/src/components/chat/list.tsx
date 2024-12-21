@@ -55,11 +55,11 @@ export default function AdvancedChatList() {
         {chatData.map((chat, index) => (
           <ChatItemContainer
             key={index}
-            align={chat.align === "left" ? "left" : "right"} 
+            align={chat.align === "left" ? "left" : "right"}
           >
             <ChatItemBody className={"max-w-[80%] gap-2"}>
               {chat.align === "left" && (
-                <ChatItemSenderAvatar icon="assistant" />
+                <ChatItemSenderAvatar icon="assistant" className="" />
               )}
               <ChatItemContent
                 className={
