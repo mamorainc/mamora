@@ -1,0 +1,28 @@
+{
+  "name": "mamora-backend",
+  "version": "1.0.0",
+  "main": "dist/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx --watch src/index.ts",
+    "build": "tsc -b",
+    "start": "node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "@solana/web3.js": "^1.98.0",
+    "@types/bs58": "^4.0.4",
+    "@types/express": "^5.0.0",
+    "bs58": "^6.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "prisma": "^6.1.0"
+  }
+}

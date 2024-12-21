@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { Box } from "lucide-react";
 import Link from "next/link";

@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+
+  username String @unique
+
+  email       String  @unique
+  is_verified Boolean @default(false)
+  password    String
+
+  public_key  String
+  private_key String // Ensure encryption at the application level
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  chats Chat[]
+}
+
+model Chat {
+  id         String    @id @default(uuid())
+  title      String
+  user_id    String
+  user       User      @relation(fields: [user_id], references: [id])
+  messages   Message[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+}
+
+model Message {
+  id         String    @id @default(uuid())
+  content    String
+  chat_id    String
+  chat       Chat      @relation(fields: [chat_id], references: [id])
+  bot_reply  BotReply? @relation(name: "MessageToBotReply")
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+}
+
+model BotReply {
+  id         String      @id @default(uuid())
+  content    String?
+  status     ReplyStatus @default(PENDING)
+  message_id String      @unique
+  message    Message     @relation(fields: [message_id], references: [id], name: "MessageToBotReply")
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+}
+
+enum ReplyStatus {
+  PENDING
+  SENT
+  RECEIVED
+  FAILED
+}

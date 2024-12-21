@@ -1,8 +1,7 @@
+import { Toaster } from "@/components/ui/toaster";
 import "@/globals.css";
-import { AppWalletProvider } from "@/providers/app-wallet";
 import { ThemeProvider } from "@/providers/theme";
 import type { Metadata } from "next";
-import { Toaster } from "@/components/ui/toaster";
 import { TanstackReactQueryProvider } from "@/providers/tanstack-react-query";
 import { AuthWrapper } from "@/components/auth-wrapper";
 
@@ -27,9 +26,10 @@ export default function RootLayout({
         >
           <TanstackReactQueryProvider>
             <AuthWrapper>
-              <AppWalletProvider>{children}</AppWalletProvider>
+             {children}
             </AuthWrapper>
           </TanstackReactQueryProvider>
+
           <Toaster />
         </ThemeProvider>
       </body>
