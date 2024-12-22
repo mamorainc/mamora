@@ -1,5 +1,4 @@
 "use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,20 +10,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/hooks/use-authentication";
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { useAuth } from "@/stores/use-auth";
+import { User } from "lucide-react";
 
 export function ProfileDropdown() {
   const { mutate: logout, isPending } = useLogout();
+  const { copyToClipboard } = useCopyToClipboard();
+
   const authStore = useAuth();
   const user = useAuth((state) => state.user);
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="size-10">
-            <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-            <AvatarFallback>{`${user?.username[0].toUpperCase()}${user?.username[1].toUpperCase()}`}</AvatarFallback>
-          </Avatar>
+        <Button variant="outline" size={"icon"}>
+          <User size={25} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -41,7 +41,7 @@ export function ProfileDropdown() {
           <DropdownMenuItem onClick={() => console.log(authStore)}>
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem>Copy Wallet Address</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => copyToClipboard(user?.public_key || "ERROR")}>Copy Wallet Address</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem

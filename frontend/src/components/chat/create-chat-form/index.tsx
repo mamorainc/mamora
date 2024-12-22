@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -19,10 +18,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useCreateChat, useSendMessage } from "@/hooks/use-chat";
+import { useChatStore } from "@/stores/use-chat";
 
 export function CreateChatForm() {
+  const setId = useChatStore((state) => state.setId);
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<MessageFormData>({
     resolver: zodResolver(messageSchema),
@@ -31,19 +32,24 @@ export function CreateChatForm() {
     },
   });
 
+  const { mutateAsync: createChat, isPending: isCreateChatPending } =
+    useCreateChat();
+  const { mutateAsync: sendMessage, isPending: isSendMessagePending } =
+    useSendMessage();
+
   const handleSubmit = async (data: MessageFormData) => {
     try {
-      const uuid =
-        Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15);
-      setIsSubmitting(true);
-      console.log(data);
+      const chat = await createChat();
+      setId(chat.chatId);
+      const message = await sendMessage({
+        chatId: chat.chatId,
+        content: data.message,
+      });
+      console.log(message);
       form.reset();
-      router.push(`/chat/${uuid}`);
+      router.push(`/chat/${chat.chatId}`);
     } catch (error) {
       console.error("Failed to send message:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -95,7 +101,7 @@ export function CreateChatForm() {
                         <Button
                           type="submit"
                           size="icon"
-                          disabled={isSubmitting}
+                          disabled={isCreateChatPending || isSendMessagePending}
                         >
                           <Send className="size-4" />
                         </Button>
@@ -120,6 +126,7 @@ export function CreateChatForm() {
             onClick={() =>
               form.setValue("message", action.label, { shouldValidate: true })
             }
+            disabled={isCreateChatPending || isSendMessagePending}
           >
             {action.icon} {action.label}
           </Button>
