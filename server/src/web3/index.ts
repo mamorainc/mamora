@@ -37,14 +37,12 @@ const getConnection = (network: Network): Connection => {
   return new Connection(url, 'confirmed');
 };
 
-
-
 const getBalance = async (
   network: Network,
   pk: string
 ): Promise<{ status: Status; error?: string; data: { balance?: number } }> => {
   try {
-    if (!network) {
+    if (network != Network.DEV && network != Network.MAIN) {
       return createResponse(Status.Failure, {}, 'Network is not defined');
     }
 
@@ -70,7 +68,7 @@ const sendSol = async (
   amount: string
 ): Promise<{ status: Status; error?: string; data: { txHash?: string } }> => {
   try {
-    if (!network) {
+    if (network != Network.DEV && network != Network.MAIN) {
       return createResponse(Status.Failure, {}, 'Network is not defined');
     }
 
@@ -126,18 +124,20 @@ const swapToken = async (
   slippageBps = 50
 ): Promise<{ status: Status; error?: string; data: { txHash?: string } }> => {
   try {
-    if (!network) {
+    if (network != Network.DEV && network != Network.MAIN) {
       return createResponse(Status.Failure, {}, 'Network is not defined');
     }
 
     const wallet = Keypair.fromSecretKey(bs58.decode(fromSecretKey));
     const connection = getConnection(network);
 
+    const lamportAmount = Number(amount) * LAMPORTS_PER_SOL;
+
     const quoteResponse = await axios.get('https://quote-api.jup.ag/v6/quote', {
       params: {
         inputMint: fromTokenAddr,
         outputMint: toTokenAddr,
-        amount,
+        amount: lamportAmount,
         slippageBps,
       },
     });
