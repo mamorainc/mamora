@@ -16,10 +16,6 @@ export function useCheckAuth() {
             await sleep(1500)
             try {
                 const response = await api.get('/api/v1/user/me')
-                console.log(response)
-                console.log(response.data)
-                console.log(response.data.data)
-                console.log(response.data.data.user)
                 if (response.data?.data?.user) {
                     setAuth(response.data.data.user)
                     if (pathname === '/') {
