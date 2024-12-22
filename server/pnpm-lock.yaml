@@ -8,6 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@langchain/core':
+        specifier: ^0.3.26
+        version: 0.3.26(openai@4.77.0(zod@3.24.1))
+      '@langchain/langgraph':
+        specifier: ^0.2.34
+        version: 0.2.34(@langchain/core@0.3.26(openai@4.77.0(zod@3.24.1)))
+      '@langchain/openai':
+        specifier: ^0.3.16
+        version: 0.3.16(@langchain/core@0.3.26(openai@4.77.0(zod@3.24.1)))
       '@prisma/client':
         specifier: ^6.1.0
         version: 6.1.0(prisma@6.1.0)
@@ -53,8 +62,11 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
+      openai:
+        specifier: ^4.77.0
+        version: 4.77.0(zod@3.24.1)
       solana-agent-kit:
-        specifier: ^1.1.0
+        specifier: ^1.2.0
         version: 1.2.0(@noble/hashes@1.6.1)(axios@1.7.9)(bufferutil@4.0.8)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.1)
       tsx:
         specifier: ^4.19.2
@@ -2661,7 +2673,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.26.0
       '@noble/curves': 1.7.0
-      '@noble/hashes': 1.5.0
+      '@noble/hashes': 1.6.1
       '@solana/buffer-layout': 4.0.1
       agentkeepalive: 4.5.0
       bigint-buffer: 1.1.5
@@ -2765,7 +2777,7 @@ snapshots:
 
   '@types/node-fetch@2.6.12':
     dependencies:
-      '@types/node': 18.19.68
+      '@types/node': 22.10.2
       form-data: 4.0.1
 
   '@types/node@12.20.55': {}

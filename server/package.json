@@ -12,6 +12,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@langchain/core": "^0.3.26",
+    "@langchain/langgraph": "^0.2.34",
+    "@langchain/openai": "^0.3.16",
     "@prisma/client": "^6.1.0",
     "@project-serum/anchor": "^0.26.0",
     "@solana/web3.js": "^1.98.0",
@@ -27,7 +30,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "solana-agent-kit": "^1.1.0",
+    "openai": "^4.77.0",
+    "solana-agent-kit": "^1.2.0",
     "tsx": "^4.19.2",
     "zod": "^3.24.1"
   },
