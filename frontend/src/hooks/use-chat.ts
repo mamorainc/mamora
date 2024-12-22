@@ -1,8 +1,7 @@
 import { api } from "@/lib/axios"
 import logger from "@/lib/logger"
 import { useChatStore } from "@/stores/use-chat"
-import { CreateChatResponse, SendMessageDto, SendMessageResponse } from "@/types/chat"
-import { ApiResponse } from "@/utils/api-response"
+import { CreateChatResponse, Message, SendMessageDto, SendMessageResponse } from "@/types/chat"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 export function useCreateChat() {
@@ -23,13 +22,15 @@ export function useCreateChat() {
     })
 }
 
-export const useGetMessagesByChatId = () => {
+export const useGetMessagesByChatId = (id?: string) => {
+    const chatId = useChatStore((state) => state.id)
     return useQuery({
-        queryKey: ['messages', { chatId: useChatStore.getState().id }],
+        queryKey: ['messages', { chatId: id || chatId }],
         queryFn: async () => {
-            const response = await api.get<ApiResponse<{ data: never }>>(`/api/v1/chat/${useChatStore.getState().id}`)
+            const response = await api.get<Message[]>(`/api/v1/chat/${id || chatId}`)
             return response.data
         },
+        enabled: !!id || !!chatId,
     })
 }
 
@@ -41,6 +42,7 @@ export const useSendMessage = () => {
             })
             return response.data
         },
+        mutationKey: ['sendMessage'],
         onSuccess: (response) => {
             logger.success('Message sent successfully', response)
         },
@@ -50,3 +52,4 @@ export const useSendMessage = () => {
         },
     })
 }
+

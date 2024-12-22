@@ -12,26 +12,34 @@ import {
   Send,
 } from "lucide-react";
 import { MessageFormData, messageSchema } from "./schema";
-import { useRouter } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useCreateChat, useSendMessage } from "@/hooks/use-chat";
+import {
+  useCreateChat,
+  useGetMessagesByChatId,
+  useSendMessage,
+} from "@/hooks/use-chat";
 import { useChatStore } from "@/stores/use-chat";
+import { useRouter } from "next/navigation";
 
 export function CreateChatForm() {
-  const setId = useChatStore((state) => state.setId);
   const router = useRouter();
-
+  const setId = useChatStore((state) => state.setId);
+  const setBotReplyId = useChatStore((state) => state.setBotReplyId);
+  const setLatestBotNotRepliedMessage = useChatStore(
+    (state) => state.setLatestBotNotRepliedMessage,
+  );
   const form = useForm<MessageFormData>({
     resolver: zodResolver(messageSchema),
     defaultValues: {
       message: "",
     },
   });
-
+  const { data: messages, isLoading: isLoadingMessages } =
+    useGetMessagesByChatId();
   const { mutateAsync: createChat, isPending: isCreateChatPending } =
     useCreateChat();
   const { mutateAsync: sendMessage, isPending: isSendMessagePending } =
@@ -45,7 +53,8 @@ export function CreateChatForm() {
         chatId: chat.chatId,
         content: data.message,
       });
-      console.log(message);
+      setBotReplyId(message.botReplyId);
+      setLatestBotNotRepliedMessage(message.messageId);
       form.reset();
       router.push(`/chat/${chat.chatId}`);
     } catch (error) {
@@ -75,6 +84,15 @@ export function CreateChatForm() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col items-center justify-center gap-8 px-4">
       <h2 className="text-2xl font-bold lg:text-3xl">What can I help with?</h2>
+
+      {isLoadingMessages && <p>Loading messages...</p>}
+      {messages?.map((message, index) => {
+        return (
+          <div key={index} className="border-4 p-2 text-sm">
+            {JSON.stringify(message)}
+          </div>
+        );
+      })}
 
       <Form {...form}>
         <form

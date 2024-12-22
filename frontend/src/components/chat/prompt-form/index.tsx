@@ -7,21 +7,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Send } from "lucide-react";
-// import {
-//   useAddMessageInConversationMutation,
-//   useCreateConversationMutation,
-//   useUploadDocumentMutation,
-// } from "@/services/chat/mutations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { promptformSchema, PromptformValues } from "./schema";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
+import { useSendMessage } from "@/hooks/use-chat";
+import { useChatStore } from "@/stores/use-chat";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function PromptForm() {
-  const { toast } = useToast();
-  //   const params = useParams<{ id: string }>();
-  //   const router = useRouter();
+  const queryClient = useQueryClient();
+  const chatId = useChatStore((state) => state.id);
   const form = useForm<PromptformValues>({
     resolver: zodResolver(promptformSchema),
   });
@@ -29,12 +25,23 @@ export function PromptForm() {
   //   const addMessage = useAddMessageInConversationMutation();
   //   const createConversation = useCreateConversationMutation();
   //   const uploadDocument = useUploadDocumentMutation();
+  const { mutateAsync: sendMessage, isPending } = useSendMessage();
 
   const onSubmit = async () => {
     try {
-      toast({
-        title: "Mamora",
+      if (!chatId) {
+        alert("Chat not found");
+        return;
+      }
+      await sendMessage({
+        chatId: chatId?.toString(),
+        content: form.getValues("message") || "",
       });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["messages", { chatId: chatId?.toString() }],
+      });
+
       form.reset({ message: "" });
     } catch (error) {
       console.log(error);
@@ -46,27 +53,6 @@ export function PromptForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="relative flex max-h-[50vh] w-full grow flex-col overflow-hidden border-t bg-background pl-2 pr-10 sm:rounded-md sm:border sm:pl-4 sm:pr-14">
-            {/* <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  type="button"
-                  className="absolute left-0 top-[14px] size-8 rounded-full bg-background p-0 sm:left-4"
-                  onClick={() => uploadFileRef.current?.click()}
-                  //   disabled={
-                  //     addMessage.isPending ||
-                  //     createConversation.isPending ||
-                  //     uploadDocument.isPending
-                  //   }
-                >
-                  <Plus />
-                  <span className="sr-only">Upload files</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Upload files</TooltipContent>
-            </Tooltip> */}
-
             <FormField
               control={form.control}
               name="message"
@@ -92,7 +78,7 @@ export function PromptForm() {
             <div className="absolute right-2 top-[13px] sm:right-4">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button type="submit" size="icon">
+                  <Button type="submit" size="icon" disabled={isPending}>
                     <Send size={15} />
                     <span className="sr-only">Send message</span>
                   </Button>
