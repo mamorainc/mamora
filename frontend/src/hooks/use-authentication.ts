@@ -20,7 +20,7 @@ export function useRegister(callbacks?: AuthHookOptions) {
 
     return useMutation({
         mutationFn: async (data: RegisterRequest) => {
-            const response = await api.post<ApiResponse<AuthResponse>>('/auth/register', data, {
+            const response = await api.post<ApiResponse<AuthResponse>>('/api/v1/user/signup', data, {
                 withCredentials: true
             })
             return response.data
@@ -41,6 +41,8 @@ export function useRegister(callbacks?: AuthHookOptions) {
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
+            console.log(`error`)
+            console.log(error)
             toast({
                 variant: 'destructive',
                 title: 'Error',
@@ -54,12 +56,11 @@ export function useRegister(callbacks?: AuthHookOptions) {
 }
 
 export function useLogin(callbacks?: AuthHookOptions) {
-    const router = useRouter()
     const setAuth = useAuth((state) => state.setAuth)
 
     return useMutation({
         mutationFn: async (data: LoginRequest) => {
-            const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', data, {
+            const response = await api.post<ApiResponse<AuthResponse>>('/api/v1/user/signin', data, {
                 withCredentials: true
             })
             return response.data
@@ -74,7 +75,6 @@ export function useLogin(callbacks?: AuthHookOptions) {
                 if (callbacks?.onSuccess) {
                     callbacks?.onSuccess()
                 }
-                router.push('/')
             }
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,44 +92,6 @@ export function useLogin(callbacks?: AuthHookOptions) {
     })
 }
 
-export function useGuestLogin(callbacks?: AuthHookOptions) {
-    const router = useRouter()
-    const { setAuth } = useAuth()
-
-    return useMutation({
-        mutationFn: async () => {
-            const response = await api.post<ApiResponse<AuthResponse>>('/auth/guest', undefined, {
-                withCredentials: true
-            })
-            return response.data
-        },
-        onSuccess: (response) => {
-            if (response.data?.user) {
-                setAuth(response.data.user)
-                toast({
-                    title: 'Welcome, Guest!',
-                    description: 'You are logged in as a guest user',
-                })
-
-                if (callbacks?.onSuccess) {
-                    callbacks.onSuccess()
-                }
-                router.push('/')
-            }
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onError: (error: any) => {
-            toast({
-                variant: 'destructive',
-                title: 'Error',
-                description: error.response?.data?.statusMessage || 'Guest login failed',
-            })
-            if (callbacks?.onError) {
-                callbacks.onError()
-            }
-        },
-    })
-}
 
 export function useLogout(callbacks?: AuthHookOptions) {
     const router = useRouter()
@@ -137,7 +99,7 @@ export function useLogout(callbacks?: AuthHookOptions) {
 
     return useMutation({
         mutationFn: async () => {
-            const response = await api.post<ApiResponse<null>>('/auth/logout')
+            const response = await api.post<ApiResponse<null>>('/api/v1/user/logout')
             return response.data
         },
         onSuccess: () => {

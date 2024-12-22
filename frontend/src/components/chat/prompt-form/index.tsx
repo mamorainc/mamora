@@ -25,24 +25,28 @@ export function PromptForm() {
   const form = useForm<PromptformValues>({
     resolver: zodResolver(promptformSchema),
   });
+
   //   const addMessage = useAddMessageInConversationMutation();
   //   const createConversation = useCreateConversationMutation();
   //   const uploadDocument = useUploadDocumentMutation();
 
-  const onSubmit = async (data: PromptformValues) => {
-    alert(JSON.stringify(data, null, 2));
-    toast({
-      title: "Mamora",
-    });
-    form.reset({ message: "" });
+  const onSubmit = async () => {
+    try {
+      toast({
+        title: "Mamora",
+      });
+      form.reset({ message: "" });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="relative flex max-h-[50vh] border-t w-full grow flex-col overflow-hidden bg-background pl-2 pr-10 sm:rounded-md sm:border sm:pl-4 sm:pr-14"> 
-            {/* <Tooltip> 
+          <div className="relative flex max-h-[50vh] w-full grow flex-col overflow-hidden border-t bg-background pl-2 pr-10 sm:rounded-md sm:border sm:pl-4 sm:pr-14">
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="outline"

@@ -17,12 +17,19 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { LogInFormSchema, logInformSchema } from "./schema";
+import { useLogin } from "@/hooks/use-authentication";
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
 export function LoginForm({ className, ...props }: UserAuthFormProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const { mutate: login } = useLogin({
+    onSuccess() {
+      form.reset();
+      router.replace(`/dashboard`);
+    },
+  });
   const form = useForm<LogInFormSchema>({
     resolver: zodResolver(logInformSchema),
     defaultValues: {
@@ -32,11 +39,11 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
   });
 
   function onSubmit(data: LogInFormSchema) {
-    console.log(data);
+    login(data);
     toast({
       title: "Sign In Completed!",
     });
-    router.replace("/dashboard");
+    // router.replace("/dashboard");
   }
 
   return (
