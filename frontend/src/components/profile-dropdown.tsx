@@ -41,7 +41,11 @@ export function ProfileDropdown() {
           <DropdownMenuItem onClick={() => console.log(authStore)}>
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => copyToClipboard(user?.public_key || "ERROR")}>Copy Wallet Address</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => copyToClipboard(user?.public_key || "ERROR")}
+          >
+            Copy Wallet Address
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
