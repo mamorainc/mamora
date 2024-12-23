@@ -7,6 +7,9 @@ import prisma from '../db';
 import Moralis from 'moralis';
 // import { createResponse, ServiceResponse } from './call.service';
 
+const SOL_TOKEN_ADDRESS = 'So11111111111111111111111111111111111111112';
+const DEFAULT_CHAIN = 'devnet';
+
 type ServiceResponse = {
   status: number;
   message: string;
@@ -103,70 +106,131 @@ const getUserDetails = async (req: Request): Promise<ServiceResponse> => {
   });
 };
 
+// const getWalletData = async (
+//   req: Request & { query: { wallet?: string; chain?: string } }
+// ): Promise<ServiceResponse> => {
+//   const wallet = req.query.wallet;
+//   const chain = req.query.chain || 'devnet';
+
+//   try {
+//     if (wallet) {
+//       if (!PublicKey.isOnCurve(wallet)) {
+//         return createResponse(411, 'Error: Invalid public key format.');
+//       }
+
+//       const response = await Moralis.SolApi.account.getPortfolio({
+//         network: chain.toString(),
+//         address: wallet,
+//       });
+
+//       const priceData = await Moralis.SolApi.token.getTokenPrice({
+//         network: 'mainnet',
+//         address: 'So11111111111111111111111111111111111111112',
+//       });
+
+//       const usdPrice = priceData?.raw.usdPrice || 0;
+
+//       const data = {
+//         ...response.raw,
+//         usdPrice: usdPrice,
+//       };
+
+//       return createResponse(200, 'User Wallet Data', data);
+//     } else {
+//       const user = await prisma.user.findFirst({
+//         where: { id: req.userId },
+//       });
+//       if (!user) {
+//         return createResponse(404, 'Error: User not found');
+//       }
+
+//       const priceData = await Moralis.SolApi.token.getTokenPrice({
+//         network: 'mainnet',
+//         address: 'So11111111111111111111111111111111111111112',
+//       });
+
+//       const usdPrice = priceData?.raw.usdPrice || 0;
+
+//       const response = await Moralis.SolApi.account.getPortfolio({
+//         network: chain.toString(),
+//         address: user.public_key,
+//       });
+
+//       const data = {
+//         ...response.raw,
+//         usdPrice: usdPrice,
+//       };
+
+//       return createResponse(200, 'User Wallet Data', data);
+//     }
+//   } catch (error) {
+//     console.log(error);
+
+//     return createResponse(
+//       400,
+//       'Error: network must be one of the following values: mainnet'
+//     );
+//   }
+// };
+
+const fetchUsdPrice = async (): Promise<number> => {
+  try {
+    const priceData = await Moralis.SolApi.token.getTokenPrice({
+      network: 'mainnet',
+      address: SOL_TOKEN_ADDRESS,
+    });
+    return priceData?.raw.usdPrice || 0;
+  } catch (error) {
+    console.error('Error fetching SOL token price:', error);
+    return 0;
+  }
+};
+
+const getWalletPortfolio = async (address: string, network: string) => {
+  try {
+    return await Moralis.SolApi.account.getPortfolio({ network, address });
+  } catch (error) {
+    console.error(`Error fetching portfolio for address ${address}:`, error);
+    throw new Error('Failed to fetch portfolio data.');
+  }
+};
+
 const getWalletData = async (
   req: Request & { query: { wallet?: string; chain?: string } }
 ): Promise<ServiceResponse> => {
-  const wallet = req.query.wallet;
-  const chain = req.query.chain || 'devnet';
+  const { wallet, chain = DEFAULT_CHAIN } = req.query;
 
   try {
-    if (wallet) {
-      if (!PublicKey.isOnCurve(wallet)) {
-        return createResponse(411, 'Error: Invalid public key format.');
-      }
+    const address = wallet
+      ? wallet
+      : await (async () => {
+          const user = await prisma.user.findFirst({
+            where: { id: req.userId },
+          });
+          if (!user) throw new Error('User not found');
+          return user.public_key;
+        })();
 
-      const response = await Moralis.SolApi.account.getPortfolio({
-        network: chain.toString(),
-        address: wallet,
-      });
-
-      const priceData = await Moralis.SolApi.token.getTokenPrice({
-        network: 'mainnet',
-        address: 'So11111111111111111111111111111111111111112',
-      });
-
-      const usdPrice = priceData?.raw.usdPrice || 0;
-
-      const data = {
-        ...response.raw,
-        usdPrice: usdPrice,
-      };
-
-      return createResponse(200, 'User Wallet Data', data);
-
-    } else {
-      const user = await prisma.user.findFirst({
-        where: { id: req.userId },
-      });
-      if (!user) {
-        return createResponse(404, 'Error: User not found');
-      }
-
-      const priceData = await Moralis.SolApi.token.getTokenPrice({
-        network: 'mainnet',
-        address: 'So11111111111111111111111111111111111111112',
-      });
-
-      const usdPrice = priceData?.raw.usdPrice || 0;
-
-      const response = await Moralis.SolApi.account.getPortfolio({
-        network: chain.toString(),
-        address: user.public_key,
-      });
-
-      const data = {
-        ...response.raw,
-        usdPrice: usdPrice,
-      };
-
-      return createResponse(200, 'User Wallet Data', data);
+    if (!PublicKey.isOnCurve(address)) {
+      return createResponse(411, 'Error: Invalid public key format.');
     }
-  } catch (error) {
-    console.log(error);
 
+    const [portfolioResponse, usdPrice] = await Promise.all([
+      getWalletPortfolio(address, chain),
+      fetchUsdPrice(),
+    ]);
+
+    const data = {
+      ...portfolioResponse.raw,
+      usdPrice,
+    };
+
+    return createResponse(200, 'User Wallet Data', data);
+  } catch (error: unknown) {
+    // console.error('Error in getWalletData:', error.message || error);
     return createResponse(
       400,
-      'Error: network must be one of the following values: mainnet'
+     'An error occurred while fetching wallet data.'
     );
   }
 };
