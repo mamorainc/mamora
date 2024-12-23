@@ -6,6 +6,7 @@ import { authMiddleware } from './middleware';
 import actionRouter from './router/action.router';
 import chatRouter from './router/chat.router';
 import userRouter from './router/user.router';
+import Moralis from 'moralis';
 
 configDotenv();
 
@@ -25,6 +26,16 @@ app.get('/', (req, res) => {
   });
 });
 
+(async () => {
+  await Moralis.start({
+    apiKey: process.env.MORALIS_API_KEY,
+  });
+  console.log('Moralis initialized');
+})();
+
+
+// initializeMoralis();
+
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/action', actionRouter);
 app.use('/api/v1/chat', authMiddleware, chatRouter);
@@ -35,6 +46,7 @@ app.use((req, res) => {
     message: 'API route not found',
   });
 });
+
 
 app.listen(process.env.PORT || 9000, () => {
   console.log(`app listening on http://localhost:9000`);
