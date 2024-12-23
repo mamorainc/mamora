@@ -184,12 +184,14 @@ const swapToken = async (
     const txid = await connection.sendRawTransaction(transaction.serialize(), {
       skipPreflight: true,
       maxRetries: 2,
+      preflightCommitment: "confirmed"
     });
     await connection.confirmTransaction({
       blockhash: latestBlockhash.blockhash,
       lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
       signature: txid,
-    });
+
+    }, 'confirmed'); 
 
     return createResponse(Status.Success, { txHash: txid });
   } catch (error: unknown) {
