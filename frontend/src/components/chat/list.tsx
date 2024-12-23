@@ -85,7 +85,7 @@ export default function ChatList() {
   }
   return (
     <AnimatePresence initial={false} mode="popLayout">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0 bg-red-900">
         {/* {latestBotNotRepliedMessage.content ? (
           <ChatItemContainer align={"right"}>
             <ChatItemBody className={"max-w-[80%] gap-2"}>
@@ -95,19 +95,19 @@ export default function ChatList() {
         ) : null} */}
 
         {messages?.map((message) => (
-          <div key={message.id} className="flex flex-col gap-10">
+          <div key={message.id} className="flex flex-col gap-10 bg-red-500 w-full">
             {/* User   */}
-            <ChatItemContainer align={"right"}>
+            <ChatItemContainer align={"right"} className="bg-green-900">
               <ChatItemBody className={"max-w-[80%] gap-2"}>
                 <ChatItemContent>{message.content}</ChatItemContent>
               </ChatItemBody>
             </ChatItemContainer>
             {/* Bot */}
             {data?.status != "PENDING" ? (
-              <ChatItemContainer align={"left"}>
+              <ChatItemContainer align={"left"} className="bg-blue-900">
                 <ChatItemBody className={"max-w-[80%] gap-2"}>
                   <ChatItemSenderAvatar icon="assistant" />
-                  <ChatItemContent className="border-none bg-transparent">
+                  <ChatItemContent className="border-none bg-transparent break-all">
                     {message.bot_reply.content || ""}
                   </ChatItemContent>
                 </ChatItemBody>
