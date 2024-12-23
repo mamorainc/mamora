@@ -31,6 +31,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.16",
     "openai": "^4.77.0",
     "solana-agent-kit": "^1.2.0",
     "tsx": "^4.19.2",
