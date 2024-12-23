@@ -42,12 +42,17 @@ export default function ChatList() {
   const setBotReplyId = useChatStore((state) => state.setBotReplyId);
 
   const chatItemsContainerRef = useRef<HTMLDivElement | null>(null);
-  const scrollToChatItemsContainerBottom = () => {
-    if (chatItemsContainerRef.current) {
-      chatItemsContainerRef.current.scrollTop =
-        chatItemsContainerRef.current.scrollHeight + 300;
-    }
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (!isMessagesLoading) {
+      scrollToBottom();
+    }
+  }, [messages, isMessagesLoading]);
 
   useEffect(() => {
     if (!id) return;
@@ -151,10 +156,6 @@ export default function ChatList() {
     }
   };
 
-  useEffect(() => {
-    scrollToChatItemsContainerBottom();
-  }, [messages, isMessagesLoading]);
-
   if (isMessagesLoading) {
     return (
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0">
@@ -223,6 +224,7 @@ export default function ChatList() {
             </ChatItemBody>
           </ChatItemContainer>
         ) : null}
+        <div ref={bottomRef} />
       </div>
     </AnimatePresence>
   );
