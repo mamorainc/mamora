@@ -129,7 +129,7 @@ const sendMessageInChat = async function (req: Request, res: Response) {
       botReplyId,
     });
 
-    processUserMessage(botReplyId, content, userId).catch((err) => {
+    processUserMessage(botReplyId, content, userId, chatId).catch((err) => {
       console.error('Error in background processBotReply:', err);
     });
   } catch (error) {
