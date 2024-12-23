@@ -13,6 +13,7 @@ import bs58 from 'bs58';
 
 // import { Wallet } from '@project-serum/anchor';
 import axios from 'axios';
+import Moralis from 'moralis';
 
 enum Network {
   DEV,
@@ -198,4 +199,38 @@ const swapToken = async (
   }
 };
 
-export { getBalance, sendSol, swapToken };
+const getPrice = async (
+  network: Network,
+  tokenAddress: string
+): Promise<{ status: Status; error?: string; data: { usdPrice?: number } }> => {
+  try {
+    if (network !== Network.DEV && network !== Network.MAIN) {
+      return createResponse(Status.Failure, {}, 'Invalid network specified.');
+    }
+
+    await Moralis.start({
+      apiKey: process.env.MORALIS_API_KEY,
+    });
+
+    const chain = network === Network.DEV ? 'devnet' : 'mainnet';
+
+    const response = await Moralis.SolApi.token.getTokenPrice({
+      network: chain,
+      address: tokenAddress,
+    });
+
+    const usdPrice = response?.raw.usdPrice || 0;
+
+    return createResponse(Status.Success, { usdPrice }, '');
+  } catch (error: unknown) {
+    // Handle and log errors
+    const errorMsg =
+      error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Error fetching token price:', errorMsg);
+
+    // Return a failure response
+    return createResponse(Status.Failure, {}, 'Failed to get token price.');
+  }
+};
+
+export { getBalance, sendSol, swapToken, getPrice };
