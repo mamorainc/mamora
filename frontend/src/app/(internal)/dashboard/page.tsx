@@ -264,12 +264,12 @@ export function WalletBalanceChart() {
                 <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="0%"
-                    stopColor="rgb(59, 130, 246)"
+                    stopColor="hsl(var(--primary))"
                     stopOpacity={0.3}
                   />
                   <stop
                     offset="100%"
-                    stopColor="rgb(59, 130, 246)"
+                    stopColor="hsl(var(--primary))"
                     stopOpacity={0}
                   />
                 </linearGradient>
@@ -288,7 +288,7 @@ export function WalletBalanceChart() {
               <Tooltip
                 content={<CustomTooltip />}
                 cursor={{
-                  stroke: "#6B7280",
+                  stroke: "var(--primary)",
                   strokeWidth: 1,
                   strokeDasharray: "5 5",
                 }}
@@ -296,7 +296,7 @@ export function WalletBalanceChart() {
               <Area
                 type="monotone"
                 dataKey="balance"
-                stroke="#3B82F6"
+                stroke="hsl(var(--primary))"
                 strokeWidth={2}
                 fill="url(#gradientFill)"
                 animationDuration={2000}

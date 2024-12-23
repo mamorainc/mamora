@@ -1,6 +1,5 @@
 "use client";
-
-import * as React from "react";
+import React, { useEffect } from "react";
 import {
   ChatItemContainer,
   ChatItemSenderAvatar,
@@ -21,7 +20,7 @@ export default function ChatList() {
 
   const setChatId = useChatStore((state) => state.setId);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!id) return;
     setChatId(id?.toString());
     // eslint-disable-next-line react-hooks/exhaustive-deps
