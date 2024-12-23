@@ -1,0 +1,15 @@
+{
+  "name": "mamora",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names \"SERVER,FRONTEND\" --prefix \"[{name}]\" --prefix-colors \"blue.bold,green.bold\" \"cd server && pnpm dev\" \"cd frontend && pnpm dev\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

@@ -1,6 +1,5 @@
 "use client";
-
-import * as React from "react";
+import React, { useEffect } from "react";
 import {
   ChatItemContainer,
   ChatItemSenderAvatar,
@@ -8,69 +7,129 @@ import {
   ChatItemContent,
 } from "./item";
 import { AnimatePresence } from "framer-motion";
+import { useGetMessagesByChatId } from "@/hooks/use-chat";
+import { useParams } from "next/navigation";
+import { useChatStore } from "@/stores/use-chat";
+import { useIsMutating, useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/axios";
+import logger from "@/lib/logger";
 
-const chatData = [
-  {
-    align: "right",
-    content: "Can you show me my current portfolio value and performance?",
-  },
-  {
-    align: "left",
-    content:
-      "Your portfolio value is $45,231.89, up 2.5% in the last 24 hours. Your biggest holding is ETH at $25,000, followed by USDC at $15,000. Would you like to see a detailed breakdown or performance analytics?",
-  },
-  {
-    align: "right",
-    content: "I want to swap 0.5 ETH to USDC. What's the best rate available?",
-  },
-  {
-    align: "left",
-    content:
-      "I've analyzed rates across major DEXs. Current best rate: 1 ETH = 1,856 USDC on Uniswap V3. For 0.5 ETH, you'll receive approximately 928 USDC (after 0.3% fee). Would you like me to prepare this swap for you?",
-  },
-  {
-    align: "right",
-    content: "What's happening with my DeFi positions across chains?",
-  },
-  {
-    align: "left",
-    content:
-      "You have active positions in: \n1. Ethereum: Lending 2 ETH on Aave at 3.8% APY\n2. Polygon: Providing liquidity for MATIC/USDC pair, earning 12% APR\n3. BSC: Staking BNB earning 4.2% APY\nTotal DeFi earnings this month: $234.56",
-  },
-  {
-    align: "right",
-    content: "Give me a quick market update for ETH",
-  },
-  {
-    align: "left",
-    content:
-      "ETH is currently trading at $1,856, up 2.1% in 24h. Trading volume: $12.5B. Key metrics:\n- Support level: $1,820\n- Resistance: $1,900\n- Market sentiment: Bullish\n- Gas fees: 25 gwei (low)\nShall I set up price alerts for you?",
-  },
-];
+enum ReplyStatus {
+  PENDING = "PENDING",
+  SENT = "SENT",
+  RECEIVED = "RECEIVED",
+  FAILED = "FAILED",
+}
+interface BotReply {
+  id: string;
+  content: string | null;
+  created_at: Date;
+  updated_at: Date;
+  status: ReplyStatus;
+  message_id: string;
+}
 
-export default function AdvancedChatList() {
+export default function ChatList() {
+  const queryClient = useQueryClient();
+  const { id } = useParams();
+  const isMutating = useIsMutating({ mutationKey: ["sendMessage"] });
+  const { data: messages, isLoading: isLoadingMessages } =
+    useGetMessagesByChatId(id?.toString());
+  const setChatId = useChatStore((state) => state.setId);
+  const botReplyId = useChatStore((state) => state.botReplyId);
+  const setBotReplyId = useChatStore((state) => state.setBotReplyId);
+
+  useEffect(() => {
+    if (!id) return;
+    setChatId(id?.toString());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const { data, isLoading: isBotReplyLoading } = useQuery({
+    queryKey: ["bot-reply", { botReplyId }],
+    queryFn: async () => {
+      const response = await api.get<BotReply>(
+        `/api/v1/chat/bot-reply/${botReplyId}`,
+      );
+      logger.info("bot-reply data", response.data);
+      return response.data;
+    },
+    refetchInterval: 1000,
+    enabled: !!botReplyId,
+  });
+
+  useEffect(() => {
+    const invalidateQuery = async () => {
+      console.log(`first`);
+      await queryClient.invalidateQueries({
+        queryKey: ["messages", { chatId: id }],
+      });
+      console.log(`second`);
+    };
+
+    logger.info("data in useEffect", data);
+
+    if (!isBotReplyLoading && data) {
+      if (data?.status === "SENT") {
+        invalidateQuery();
+        setBotReplyId(null);
+        logger.info("setting bot reply id to null, new data", data);
+      }
+    }
+  }, [isBotReplyLoading, data]);
+
+  if (isLoadingMessages) {
+    return (
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0"></div>
+    );
+  }
   return (
     <AnimatePresence initial={false} mode="popLayout">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0">
-        {chatData.map((chat, index) => (
-          <ChatItemContainer
-            key={index}
-            align={chat.align === "left" ? "left" : "right"}
-          >
+        {/* {latestBotNotRepliedMessage.content ? (
+          <ChatItemContainer align={"right"}>
             <ChatItemBody className={"max-w-[80%] gap-2"}>
-              {chat.align === "left" && (
-                <ChatItemSenderAvatar icon="assistant" className="" />
-              )}
-              <ChatItemContent
-                className={
-                  chat.align === "left" ? "border-none bg-transparent py-0" : ""
-                }
-              >
-                {chat.content}
+              <ChatItemContent>{latestBotNotRepliedMessage.content}</ChatItemContent>
+            </ChatItemBody>
+          </ChatItemContainer>
+        ) : null} */}
+
+        {messages?.map((message) => (
+          <div key={message.id} className="flex flex-col gap-10">
+            {/* User   */}
+            <ChatItemContainer align={"right"}>
+              <ChatItemBody className={"max-w-[80%] gap-2"}>
+                <ChatItemContent>{message.content}</ChatItemContent>
+              </ChatItemBody>
+            </ChatItemContainer>
+            {/* Bot */}
+            {data?.status != "PENDING" ? (
+              <ChatItemContainer align={"left"}>
+                <ChatItemBody className={"max-w-[80%] gap-2"}>
+                  <ChatItemSenderAvatar icon="assistant" />
+                  <ChatItemContent className="border-none bg-transparent">
+                    {message.bot_reply.content || ""}
+                  </ChatItemContent>
+                </ChatItemBody>
+              </ChatItemContainer>
+            ) : null}
+          </div>
+        ))}
+
+        {isMutating || isBotReplyLoading ? (
+          <ChatItemContainer align={"left"}>
+            <ChatItemBody className={"max-w-[80%] gap-2"}>
+              <ChatItemSenderAvatar icon="assistant" />
+              <ChatItemContent className="border-none bg-transparent">
+                <div className="flex w-max items-center gap-2">
+                  <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30"></div>
+                  <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30 [animation-delay:-.3s]"></div>
+                  <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30 [animation-delay:-.5s]"></div>
+                </div>
               </ChatItemContent>
             </ChatItemBody>
           </ChatItemContainer>
-        ))}
+        ) : null}
       </div>
     </AnimatePresence>
   );

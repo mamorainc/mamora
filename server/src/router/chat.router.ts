@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import prisma from '../db';
-import processBotReply from '../service/bot.service';
+import processUserMessage from '../service/user_message.service';
 const chatRouter = Router();
 
 const getAllMessagesByChatId = async function (req: Request, res: Response) {
@@ -50,6 +50,7 @@ const getAllChatsForUser = async function (req: Request, res: Response) {
       select: {
         id: true,
         title: true,
+        created_at: true
       },
       orderBy: {
         created_at: 'desc',
@@ -128,7 +129,7 @@ const sendMessageInChat = async function (req: Request, res: Response) {
       botReplyId,
     });
 
-    processBotReply(botReplyId, content, userId).catch((err) => {
+    processUserMessage(botReplyId, content, userId).catch((err) => {
       console.error('Error in background processBotReply:', err);
     });
   } catch (error) {

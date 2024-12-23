@@ -91,7 +91,7 @@ const sendSol = async (
     //     .compileMessage()
     // );
 
-    if (amountLamports + feeEstimate < balance) {
+    if (amountLamports + feeEstimate > balance) {
       return createResponse(Status.Failure, {}, 'Insufficient balance.');
     }
 
@@ -121,8 +121,18 @@ const swapToken = async (
   amount: string,
   fromTokenAddr: string,
   toTokenAddr: string,
+  lamportMultiplier: number,
   slippageBps = 50
 ): Promise<{ status: Status; error?: string; data: { txHash?: string } }> => {
+  console.log(
+    'SWAP FUNCTION CALLED WITH :',
+    network,
+    fromSecretKey,
+    amount,
+    fromTokenAddr,
+    toTokenAddr,
+    lamportMultiplier
+  );
   try {
     if (network != Network.DEV && network != Network.MAIN) {
       return createResponse(Status.Failure, {}, 'Network is not defined');
@@ -131,7 +141,7 @@ const swapToken = async (
     const wallet = Keypair.fromSecretKey(bs58.decode(fromSecretKey));
     const connection = getConnection(network);
 
-    const lamportAmount = Number(amount) * LAMPORTS_PER_SOL;
+    const lamportAmount = Number(amount) * lamportMultiplier;
 
     const quoteResponse = await axios.get('https://quote-api.jup.ag/v6/quote', {
       params: {
@@ -153,7 +163,8 @@ const swapToken = async (
         userPublicKey: wallet.publicKey.toString(),
         wrapAndUnwrapSol: true,
       })
-      .then((res) => res.data);
+      .then((res) => res.data)
+      .catch((e) => console.log(e));
 
     if (!swapTransaction) {
       return createResponse(

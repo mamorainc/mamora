@@ -9,10 +9,10 @@ import {
   Brain,
   ChartCandlestick,
   Landmark,
+  Loader2,
   Send,
 } from "lucide-react";
 import { MessageFormData, messageSchema } from "./schema";
-import { useRouter } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
@@ -20,18 +20,23 @@ import {
 } from "@/components/ui/tooltip";
 import { useCreateChat, useSendMessage } from "@/hooks/use-chat";
 import { useChatStore } from "@/stores/use-chat";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function CreateChatForm() {
-  const setId = useChatStore((state) => state.setId);
+  const queryClient = useQueryClient();
   const router = useRouter();
-
+  const setId = useChatStore((state) => state.setId);
+  const setBotReplyId = useChatStore((state) => state.setBotReplyId);
+  const setLatestBotNotRepliedMessage = useChatStore(
+    (state) => state.setLatestBotNotRepliedMessage,
+  );
   const form = useForm<MessageFormData>({
     resolver: zodResolver(messageSchema),
     defaultValues: {
       message: "",
     },
   });
-
   const { mutateAsync: createChat, isPending: isCreateChatPending } =
     useCreateChat();
   const { mutateAsync: sendMessage, isPending: isSendMessagePending } =
@@ -45,7 +50,11 @@ export function CreateChatForm() {
         chatId: chat.chatId,
         content: data.message,
       });
-      console.log(message);
+      setBotReplyId(message.botReplyId);
+      setLatestBotNotRepliedMessage(message.messageId);
+      await queryClient.invalidateQueries({
+        queryKey: ["chats"],
+      });
       form.reset();
       router.push(`/chat/${chat.chatId}`);
     } catch (error) {
@@ -56,26 +65,32 @@ export function CreateChatForm() {
   const quickActions = [
     {
       icon: <Banknote size={15} className="ml-1" color="blue" />,
-      label: "Portfolio Updates",
+      label: "Balance",
+      value: "What is my balance?",
     },
     {
       icon: <Landmark size={15} className="ml-1" color="brown" />,
       label: "Market Updates",
+      value: "What are the latest market updates?",
     },
     {
       icon: <Brain size={15} className="ml-1" color="pink" />,
       label: "Create Strategy",
+      value: "How can I create a strategy to get 10% ROI?",
     },
     {
       icon: <ChartCandlestick size={15} className="ml-1" color="green" />,
       label: "Last 10 Trades",
+      value: "What are the latest trades?",
     },
-  ];
+  ] as const;
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col items-center justify-center gap-8 px-4">
-      <h2 className="text-2xl font-bold lg:text-3xl">What can I help with?</h2>
-
+      <h2 className="mx-auto text-2xl font-semibold lg:text-3xl">
+        {" "}
+        What can I help with?
+      </h2>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
@@ -103,12 +118,14 @@ export function CreateChatForm() {
                           size="icon"
                           disabled={isCreateChatPending || isSendMessagePending}
                         >
-                          <Send className="size-4" />
+                          {isCreateChatPending || isSendMessagePending ? (
+                            <Loader2 className="size-4 animate-spin" />
+                          ) : (
+                            <Send className="size-4" />
+                          )}
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Send Message</p>
-                      </TooltipContent>
+                      <TooltipContent>Send Message</TooltipContent>
                     </Tooltip>
                   </div>
                 </div>
@@ -124,7 +141,7 @@ export function CreateChatForm() {
             key={index}
             variant="outline"
             onClick={() =>
-              form.setValue("message", action.label, { shouldValidate: true })
+              form.setValue("message", action.value, { shouldValidate: true })
             }
             disabled={isCreateChatPending || isSendMessagePending}
           >

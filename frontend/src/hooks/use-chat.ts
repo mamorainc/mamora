@@ -1,8 +1,7 @@
 import { api } from "@/lib/axios"
 import logger from "@/lib/logger"
 import { useChatStore } from "@/stores/use-chat"
-import { CreateChatResponse, SendMessageDto, SendMessageResponse } from "@/types/chat"
-import { ApiResponse } from "@/utils/api-response"
+import { CreateChatResponse, Message, SendMessageDto, SendMessageResponse } from "@/types/chat"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 export function useCreateChat() {
@@ -23,13 +22,15 @@ export function useCreateChat() {
     })
 }
 
-export const useGetMessagesByChatId = () => {
+export const useGetMessagesByChatId = (id?: string) => {
+    const chatId = useChatStore((state) => state.id)
     return useQuery({
-        queryKey: ['messages', { chatId: useChatStore.getState().id }],
+        queryKey: ['messages', { chatId: id || chatId }],
         queryFn: async () => {
-            const response = await api.get<ApiResponse<{ data: never }>>(`/api/v1/chat/${useChatStore.getState().id}`)
+            const response = await api.get<Message[]>(`/api/v1/chat/${id || chatId}`)
             return response.data
         },
+        enabled: !!id || !!chatId
     })
 }
 
@@ -41,6 +42,7 @@ export const useSendMessage = () => {
             })
             return response.data
         },
+        mutationKey: ['sendMessage'],
         onSuccess: (response) => {
             logger.success('Message sent successfully', response)
         },
@@ -48,5 +50,34 @@ export const useSendMessage = () => {
         onError: (error: any) => {
             logger.error('Error sending message', error)
         },
+    })
+}
+
+export const useGetChats = () => {
+    return useQuery({
+        queryKey: ['chats'],
+        queryFn: async () => {
+            const response = await api.get<{ id: string, title: string, created_at: Date }[]>('/api/v1/chat')
+            return response.data
+        },
+        enabled: true,
+        select: (data) =>
+            data.map((chat) => {
+                const date = new Date(chat.created_at);
+                const formattedTime = date.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                });
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric',
+                });
+                return {
+                    ...chat,
+                    created_at: `${formattedTime} - ${formattedDate}`,
+                };
+            }),
     })
 }
