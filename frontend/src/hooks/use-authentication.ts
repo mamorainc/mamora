@@ -85,8 +85,8 @@ export function useLogin(callbacks?: AuthHookOptions) {
                 description: error?.response?.data?.statusMessage || 'Login failed',
             })
 
-            if (callbacks?.onSuccess) {
-                callbacks?.onSuccess()
+            if (callbacks?.onError) {
+                callbacks?.onError()
             }
         },
     })
