@@ -24,6 +24,10 @@ import {
 } from "@/hooks/use-chat";
 import { useChatStore } from "@/stores/use-chat";
 import { useRouter } from "next/navigation";
+// import { MoonPayButton } from "@/components/payment/moonpay-button";
+import { useHandleMoonPayAction } from "@/hooks/use-handle-moonpay-action";
+
+
 
 export function CreateChatForm() {
   const router = useRouter();
@@ -44,6 +48,8 @@ export function CreateChatForm() {
     useCreateChat();
   const { mutateAsync: sendMessage, isPending: isSendMessagePending } =
     useSendMessage();
+  useHandleMoonPayAction(messages?.[messages.length - 1]?.content);
+
 
   const handleSubmit = async (data: MessageFormData) => {
     try {

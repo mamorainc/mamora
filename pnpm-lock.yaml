@@ -17,6 +17,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.1
         version: 3.9.1(react-hook-form@7.54.2(react@19.0.0))
+      '@moonpay/moonpay-js':
+        specifier: ^0.6.2
+        version: 0.6.2
       '@radix-ui/react-avatar':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -159,6 +162,9 @@ importers:
       '@langchain/openai':
         specifier: ^0.3.16
         version: 0.3.16(@langchain/core@0.3.26(openai@4.77.0(zod@3.24.1)))
+      '@moonpay/moonpay-js':
+        specifier: ^0.6.2
+        version: 0.6.2
       '@prisma/client':
         specifier: ^6.1.0
         version: 6.1.0(prisma@6.1.0)
@@ -757,6 +763,9 @@ packages:
 
   '@metaplex-foundation/umi@0.9.2':
     resolution: {integrity: sha512-9i4Acm4pruQfJcpRrc2EauPBwkfDN0I9QTvJyZocIlKgoZwD6A6wH0PViH1AjOVG5CQCd1YI3tJd5XjYE1ElBw==}
+
+  '@moonpay/moonpay-js@0.6.2':
+    resolution: {integrity: sha512-TRSy5vae121smUbe2W340jbTldbsXktLIx3fZjiriTPSm2JvEw5sKgOpJ7PiUYVzS0nrNXXNFkY2M2xPgatx0g==}
 
   '@msgpack/msgpack@3.0.0-beta2':
     resolution: {integrity: sha512-y+l1PNV0XDyY8sM3YtuMLK5vE3/hkfId+Do8pLo/OPxfxuFAUwcGz3oiiUuV46/aBpwTzZ+mRWVMtlSKbradhw==}
@@ -4851,6 +4860,8 @@ snapshots:
       '@metaplex-foundation/umi-options': 0.8.9
       '@metaplex-foundation/umi-public-keys': 0.8.9
       '@metaplex-foundation/umi-serializers': 0.9.0
+
+  '@moonpay/moonpay-js@0.6.2': {}
 
   '@msgpack/msgpack@3.0.0-beta2': {}
 

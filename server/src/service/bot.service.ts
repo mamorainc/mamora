@@ -23,7 +23,7 @@ async function processBotReply(
       agent = oldAgent;
     }
     if (!agent) {
-      console.log('undefiend or null agent');
+      console.log('undefined or null agent');
       return;
     }
 

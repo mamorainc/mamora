@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
+    "@moonpay/moonpay-js": "^0.6.2",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-collapsible": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.4",
