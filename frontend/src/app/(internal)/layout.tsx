@@ -16,7 +16,7 @@ export default function InternalLayout({ children }: { children: ReactNode }) {
     <>
       <Suspense fallback={<div>Loading...</div>}>
         <SidebarProvider defaultOpen={defaultOpen}>
-          <AppSidebar />
+        <AppSidebar />
           <div
             id="content"
             className={cn(

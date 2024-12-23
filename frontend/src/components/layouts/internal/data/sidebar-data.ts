@@ -2,7 +2,7 @@ import {
     IconBrowserCheck, IconHelp,
     IconLayoutDashboard, IconLockAccess, IconNotification, IconPalette, IconSettings,
     IconTool,
-    IconUserCog
+    IconUserCog,
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'

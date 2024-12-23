@@ -8,7 +8,7 @@ type Store = {
     id: string | null;
     setId: (id: string) => void;
     botReplyId: string | null;
-    setBotReplyId: (id: string) => void;
+    setBotReplyId: (id: string | null) => void;
     latestBotNotRepliedMessage: {
         content: string | null
     }
@@ -32,7 +32,7 @@ export const useChatStore = create<Store>()((set) => ({
         }))
     },
     botReplyId: null,
-    setBotReplyId: (id: string) => set({ botReplyId: id }),
+    setBotReplyId: (id) => set({ botReplyId: id }),
     latestBotNotRepliedMessage: {
         content: ''
     },
