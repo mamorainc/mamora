@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "workspaces": [
-    "server",
-    "frontend"
-  ],
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "prepare": "cd server && npx prisma generate",
