@@ -64,7 +64,7 @@ export function NavGroup({ title, items }: NavGroup) {
   );
 }
 
-const NavBadge = ({ children }: { children: ReactNode }) => (
+export const NavBadge = ({ children }: { children: ReactNode }) => (
   <Badge className="rounded-full px-1 py-0 text-xs">{children}</Badge>
 );
 
@@ -87,7 +87,7 @@ const SidebarMenuLink = ({ item, href }: { item: NavLink; href: string }) => {
   );
 };
 
-const SidebarMenuCollapsible = ({
+export const SidebarMenuCollapsible = ({
   item,
   href,
 }: {
@@ -133,7 +133,7 @@ const SidebarMenuCollapsible = ({
   );
 };
 
-const SidebarMenuCollapsedDropdown = ({
+export const SidebarMenuCollapsedDropdown = ({
   item,
   href,
 }: {

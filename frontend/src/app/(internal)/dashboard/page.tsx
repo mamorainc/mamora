@@ -8,15 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { IconWallet, IconCoin, IconChartPie } from "@tabler/icons-react";
 
 const portfolioData = {
@@ -48,14 +40,6 @@ const portfolioData = {
     },
   ],
 };
-
-const chartData = [
-  { name: "Jan", value: 35000 },
-  { name: "Feb", value: 38000 },
-  { name: "Mar", value: 36000 },
-  { name: "Apr", value: 42000 },
-  { name: "May", value: 45231 },
-];
 
 const stats = [
   {
@@ -122,27 +106,11 @@ export default function DashboardPage() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            {/* Portfolio Chart */}
-            <Card className="col-span-4">
-              <CardHeader>
-                <CardTitle>Portfolio Overview</CardTitle>
-              </CardHeader>
-              <CardContent className="pl-2">
-                <ResponsiveContainer width="100%" height={350}>
-                  <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="value" stroke="#8884d8" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
+            <WalletBalanceChart />
 
             {/* Token List */}
-            <Card className="col-span-3">
+            <Card className="col-span-full md:col-span-1 lg:col-span-3">
               <CardHeader>
                 <CardTitle>Token Holdings</CardTitle>
                 <CardDescription>Your current token balances</CardDescription>
@@ -223,5 +191,127 @@ export default function DashboardPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+import { AreaChart, Area } from "recharts";
+
+const data = [
+  { date: "Jan 1", balance: 5200 },
+  { date: "Jan 8", balance: 4800 },
+  { date: "Jan 15", balance: 6100 },
+  { date: "Jan 22", balance: 5900 },
+  { date: "Jan 29", balance: 7200 },
+  { date: "Feb 5", balance: 6800 },
+  { date: "Feb 12", balance: 8400 },
+  { date: "Feb 19", balance: 8900 },
+  { date: "Feb 26", balance: 8100 },
+  { date: "Mar 5", balance: 9600 },
+  { date: "Mar 12", balance: 9200 },
+  { date: "Mar 19", balance: 10400 },
+];
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-lg border bg-background p-2 shadow-lg">
+        <p className="text-sm font-medium">{label}</p>
+        <p className="text-sm text-primary">
+          ${payload[0].value.toLocaleString()}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+export function WalletBalanceChart() {
+  const currentBalance = data[data.length - 1].balance;
+  const previousBalance = data[data.length - 2].balance;
+  const percentageChange = (
+    ((currentBalance - previousBalance) / previousBalance) *
+    100
+  ).toFixed(2);
+  const isPositive = currentBalance >= previousBalance;
+
+  return (
+    <Card className="col-span-full md:col-span-1 lg:col-span-4">
+      <CardHeader>
+        <div className="flex flex-col space-y-2">
+          <CardTitle className="text-base font-medium">Total Balance</CardTitle>
+          <div className="flex items-baseline space-x-2">
+            <span className="text-2xl font-bold">
+              ${currentBalance.toLocaleString()}
+            </span>
+            <span
+              className={`text-sm ${isPositive ? "text-green-500" : "text-red-500"}`}
+            >
+              {isPositive ? "+" : ""}
+              {percentageChange}%
+            </span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="pb-4">
+        <div className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={data}
+              margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="0%"
+                    stopColor="rgb(59, 130, 246)"
+                    stopOpacity={0.3}
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor="rgb(59, 130, 246)"
+                    stopOpacity={0}
+                  />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="date"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "#6B7280" }}
+                dy={10}
+              />
+              <YAxis
+                hide={true}
+                domain={["dataMin - 1000", "dataMax + 1000"]}
+              />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{
+                  stroke: "#6B7280",
+                  strokeWidth: 1,
+                  strokeDasharray: "5 5",
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="balance"
+                stroke="#3B82F6"
+                strokeWidth={2}
+                fill="url(#gradientFill)"
+                animationDuration={2000}
+                dot={false}
+                activeDot={{
+                  r: 6,
+                  fill: "#3B82F6",
+                  stroke: "#fff",
+                  strokeWidth: 2,
+                }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

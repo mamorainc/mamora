@@ -50,6 +50,7 @@ const getAllChatsForUser = async function (req: Request, res: Response) {
       select: {
         id: true,
         title: true,
+        created_at: true
       },
       orderBy: {
         created_at: 'desc',

@@ -12,7 +12,6 @@ import { useGetMessagesByChatId } from "@/hooks/use-chat";
 import { useParams } from "next/navigation";
 import { useChatStore } from "@/stores/use-chat";
 import { useIsMutating } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 
 export default function ChatList() {
   const { id } = useParams();
@@ -45,7 +44,7 @@ export default function ChatList() {
         ) : null} */}
 
         {messages?.map((message) => (
-          <div key={message.id} className="flex flex-col gap-2">
+          <div key={message.id} className="flex flex-col gap-10">
             {/* User   */}
             <ChatItemContainer align={"right"}>
               <ChatItemBody className={"max-w-[80%] gap-2"}>

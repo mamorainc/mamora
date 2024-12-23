@@ -33,15 +33,21 @@ export function PromptForm() {
         alert("Chat not found");
         return;
       }
-      await sendMessage({
+      const message = await sendMessage({
         chatId: chatId?.toString(),
         content: form.getValues("message") || "",
       });
-
+      console.log("Message is ",message)
+      // TAKE OUT BOT ID FROM THE RESPONSE
+      // START A FOR LOOP WITH 3 SECOND DELAY
+      // FETCH THE ENDPOINT FOR BOT REPLY STATUS
+      // ADD CONDITION IF BOT REPLY STATUS IS SENT THEN STOP THE LOOP AND BREAKT OUT
+      // DO IT FOR 3 TIMES FOR TOTOLA OF 9 SECONDS
+      // IF STILL AT THE END OF 9 SECONDS BOT STATUS IS NOT SENT THEN SHOW ERROR
+      
       await queryClient.invalidateQueries({
         queryKey: ["messages", { chatId: chatId?.toString() }],
       });
-
       form.reset({ message: "" });
     } catch (error) {
       console.log(error);
