@@ -68,7 +68,7 @@ const sendSol = async (req: Request): Promise<ServiceResponse> => {
   );
 };
 
-const userBlance = async (req: Request): Promise<ServiceResponse> => {
+const userBalance = async (req: Request): Promise<ServiceResponse> => {
   const { address } = req.body;
   const balance = await getBalance(address);
   return createResponse(200, `Balance of ${address} is ${balance}`);
@@ -87,4 +87,4 @@ const getBalance = async (pk: String) => {
   return balance;
 };
 
-export { sendSol, userBlance, swapService };
+export { sendSol, userBalance, swapService };

@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { authMiddleware } from '../middleware';
 import { callService } from '../service/call.service';
-import { sendSol, swapService, userBlance } from '../service/action.service';
+import { sendSol, swapService, userBalance } from '../service/action.service';
 
 const actionRouter = Router();
 
@@ -11,7 +11,7 @@ actionRouter.post('/send', authMiddleware, async (req, res) => {
 });
 
 actionRouter.get('/balance', authMiddleware, async (req, res) => {
-  await callService(userBlance, req, res);
+  await callService(userBalance, req, res);
 });
 
 actionRouter.post('/swap', authMiddleware, async (req, res) => {
