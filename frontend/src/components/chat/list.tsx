@@ -42,8 +42,7 @@ export default function ChatList() {
   const setChatId = useChatStore((state) => state.setId);
   const botReplyId = useChatStore((state) => state.botReplyId);
   const setBotReplyId = useChatStore((state) => state.setBotReplyId);
-  const user = useAuth((state) => state.user)
-
+  const user = useAuth((state) => state.user);
 
   const chatItemsContainerRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -126,6 +125,55 @@ export default function ChatList() {
         return {
           text: data?.data || "ERROR IN MESSAGE",
         };
+      case "swapToken":
+        return {
+          component: (
+            <div className="flex flex-col items-start justify-start gap-4">
+              {data?.actionResult?.error ? (
+                data?.actionResult?.error
+              ) : (
+                <div className="flex flex-col items-start justify-start gap-4">
+                  <ChatItemContent className="flex flex-row items-center justify-center gap-2">
+                    <CircleCheck className="size-5 text-primary" />{" "}
+                    <span>Swap successful!</span>
+                  </ChatItemContent>
+
+                  <ChatItemContent className="flex flex-col items-start justify-start gap-4 pt-4">
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="size-6 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+                      <p className="text-xs text-muted-foreground">
+                        {" "}
+                        {shortenWalletAddress(
+                          data?.fromToken?.addr || "ERROR",
+                        )}{" "}
+                      </p>
+                      <MoveRight size={20} className="text-muted-foreground" />
+                      <div className="size-6 rounded-full bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-100 via-teal-300 to-green-200"></div>
+                      <p className="text-xs text-muted-foreground">
+                        {" "}
+                        {shortenWalletAddress(
+                          data?.fromToken?.addr || "ERROR",
+                        )}{" "}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        window.open(
+                          `https://explorer.solana.com/tx/${data?.actionResult?.data?.txHash}`,
+                        )
+                      }
+                      className="w-full"
+                      variant={"link"}
+                    >
+                      {" "}
+                      View Transaction{" "}
+                    </Button>
+                  </ChatItemContent>
+                </div>
+              )}
+            </div>
+          ),
+        };
 
       case "sendSol":
         return {
@@ -137,12 +185,18 @@ export default function ChatList() {
               </ChatItemContent>
 
               <ChatItemContent className="flex flex-col items-start justify-start gap-4 pt-4">
-                <div className="flex justify-center items-center gap-2">
-                  <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 size-6 rounded-full"></div>
-                  <p className="text-xs  text-muted-foreground"> {shortenWalletAddress(user?.public_key || "ERROR")} </p>
+                <div className="flex items-center justify-center gap-2">
+                  <div className="size-6 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+                  <p className="text-xs text-muted-foreground">
+                    {" "}
+                    {shortenWalletAddress(user?.public_key || "ERROR")}{" "}
+                  </p>
                   <MoveRight size={20} className="text-muted-foreground" />
-                  <div className="bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-100 via-teal-300 to-green-200 size-6 rounded-full"></div>
-                  <p className="text-xs text-muted-foreground"> {shortenWalletAddress(data?.toPublicKey || "ERROR")} </p>
+                  <div className="size-6 rounded-full bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-100 via-teal-300 to-green-200"></div>
+                  <p className="text-xs text-muted-foreground">
+                    {" "}
+                    {shortenWalletAddress(data?.toPublicKey || "ERROR")}{" "}
+                  </p>
                 </div>
                 <Button
                   onClick={() =>
@@ -157,6 +211,7 @@ export default function ChatList() {
                   View Transaction{" "}
                 </Button>
               </ChatItemContent>
+
               <ChatItemContent className="flex flex-row items-center justify-center gap-2">
                 Your user now has received {data?.amount || "ERROR"} SOL
               </ChatItemContent>
