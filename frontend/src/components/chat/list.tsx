@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { JSX, useEffect, useRef } from "react";
 import {
   ChatItemContainer,
   ChatItemSenderAvatar,
@@ -13,6 +13,8 @@ import { useChatStore } from "@/stores/use-chat";
 import { useIsMutating, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
 import logger from "@/lib/logger";
+import { CircleCheck } from "lucide-react";
+import { Button } from "../ui/button";
 
 enum ReplyStatus {
   PENDING = "PENDING",
@@ -33,11 +35,19 @@ export default function ChatList() {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const isMutating = useIsMutating({ mutationKey: ["sendMessage"] });
-  const { data: messages, isLoading: isLoadingMessages } =
+  const { data: messages, isLoading: isMessagesLoading } =
     useGetMessagesByChatId(id?.toString());
   const setChatId = useChatStore((state) => state.setId);
   const botReplyId = useChatStore((state) => state.botReplyId);
   const setBotReplyId = useChatStore((state) => state.setBotReplyId);
+
+  const chatItemsContainerRef = useRef<HTMLDivElement | null>(null);
+  const scrollToChatItemsContainerBottom = () => {
+    if (chatItemsContainerRef.current) {
+      chatItemsContainerRef.current.scrollTop =
+        chatItemsContainerRef.current.scrollHeight + 300;
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -78,14 +88,65 @@ export default function ChatList() {
     }
   }, [isBotReplyLoading, data]);
 
-  if (isLoadingMessages) {
+  const getData = (
+    type:
+      | "getUserBalance"
+      | "getUserPublicKey"
+      | "getBalanceByPublicKey"
+      | "sendSol"
+      | "swapToken",
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: any,
+  ): { component?: JSX.Element; text?: string } => {
+    switch (type) {
+      case "getUserBalance":
+        return {
+          text:
+            data?.actionResult?.data?.balance ||
+            "ERROR IN GETTING USER BALANCE",
+        };
+
+      case "sendSol":
+        return {
+          component: (
+            <div className="flex flex-col items-start justify-start gap-4">
+              <ChatItemContent className="flex flex-row items-center justify-center gap-2">
+                <CircleCheck className="size-5 text-primary" />{" "}
+                <span>Transaction successful!</span>
+              </ChatItemContent>
+              <ChatItemContent className="flex flex-row items-center justify-center gap-2">
+                Your user now has received {data?.amount || "ERROR"} SOL
+              </ChatItemContent>
+              <ChatItemContent className="bg-transparent border-none p-0">
+                <Button onClick={() => window.open(`https://explorer.solana.com/tx/${data?.actionResult?.data?.txHash}?cluster=devnet`)}> View Transaction </Button>
+              </ChatItemContent>
+            </div>
+          ),
+        };
+      default:
+        return {
+          text: "ERROR IN GETTING DATA",
+        };
+    }
+  };
+
+  useEffect(() => {
+    scrollToChatItemsContainerBottom();
+  }, [messages, isMessagesLoading]);
+
+  if (isMessagesLoading) {
     return (
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0"></div>
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0">
+        Messages Loading...
+      </div>
     );
   }
   return (
     <AnimatePresence initial={false} mode="popLayout">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0 bg-red-900">
+      <div
+        ref={chatItemsContainerRef}
+        className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0"
+      >
         {/* {latestBotNotRepliedMessage.content ? (
           <ChatItemContainer align={"right"}>
             <ChatItemBody className={"max-w-[80%] gap-2"}>
@@ -95,20 +156,31 @@ export default function ChatList() {
         ) : null} */}
 
         {messages?.map((message) => (
-          <div key={message.id} className="flex flex-col gap-10 bg-red-500 w-full">
+          <div key={message.id} className="flex w-full flex-col gap-10">
             {/* User   */}
-            <ChatItemContainer align={"right"} className="bg-green-900">
+            <ChatItemContainer align={"right"}>
               <ChatItemBody className={"max-w-[80%] gap-2"}>
                 <ChatItemContent>{message.content}</ChatItemContent>
               </ChatItemBody>
             </ChatItemContainer>
             {/* Bot */}
             {data?.status != "PENDING" ? (
-              <ChatItemContainer align={"left"} className="bg-blue-900">
+              <ChatItemContainer align={"left"}>
                 <ChatItemBody className={"max-w-[80%] gap-2"}>
                   <ChatItemSenderAvatar icon="assistant" />
-                  <ChatItemContent className="border-none bg-transparent break-all">
-                    {message.bot_reply.content || ""}
+                  <ChatItemContent className="break-all border-none bg-transparent">
+                    {
+                      getData(
+                        message.bot_reply.content.type,
+                        message.bot_reply.content,
+                      ).text
+                    }
+                    {
+                      getData(
+                        message.bot_reply.content.type,
+                        message.bot_reply.content,
+                      ).component
+                    }
                   </ChatItemContent>
                 </ChatItemBody>
               </ChatItemContainer>

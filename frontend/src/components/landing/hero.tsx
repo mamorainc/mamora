@@ -31,7 +31,7 @@ const heroData = {
     src: "/assets/images/hero.png",
     alt: "Nebula AI Dashboard",
   },
-  gradientColors: "from-[#6366f1] to-[#8b5cf6]",
+  gradientColors: "from-[#EA580C] to-[#EA130C]",
 };
 
 export const Hero = () => {
