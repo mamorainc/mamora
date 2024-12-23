@@ -14,10 +14,12 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useSendMessage } from "@/hooks/use-chat";
 import { useChatStore } from "@/stores/use-chat";
 import { useQueryClient } from "@tanstack/react-query";
+import logger from "@/lib/logger";
 
 export function PromptForm() {
   const queryClient = useQueryClient();
   const chatId = useChatStore((state) => state.id);
+  const setBotReplyId = useChatStore((state) => state.setBotReplyId);
   const form = useForm<PromptformValues>({
     resolver: zodResolver(promptformSchema),
   });
@@ -37,14 +39,8 @@ export function PromptForm() {
         chatId: chatId?.toString(),
         content: form.getValues("message") || "",
       });
-      console.log("Message is ",message)
-      // TAKE OUT BOT ID FROM THE RESPONSE
-      // START A FOR LOOP WITH 3 SECOND DELAY
-      // FETCH THE ENDPOINT FOR BOT REPLY STATUS
-      // ADD CONDITION IF BOT REPLY STATUS IS SENT THEN STOP THE LOOP AND BREAKT OUT
-      // DO IT FOR 3 TIMES FOR TOTOLA OF 9 SECONDS
-      // IF STILL AT THE END OF 9 SECONDS BOT STATUS IS NOT SENT THEN SHOW ERROR
-      
+      setBotReplyId(message.botReplyId);
+      logger.success("message sent", message);
       await queryClient.invalidateQueries({
         queryKey: ["messages", { chatId: chatId?.toString() }],
       });

@@ -106,7 +106,7 @@ export default function DashboardPage() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
             <WalletBalanceChart />
 
             {/* Token List */}
@@ -226,7 +226,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export function WalletBalanceChart() {
+function WalletBalanceChart() {
   const currentBalance = data[data.length - 1].balance;
   const previousBalance = data[data.length - 2].balance;
   const percentageChange = (

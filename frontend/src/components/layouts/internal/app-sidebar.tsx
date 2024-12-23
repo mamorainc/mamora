@@ -13,6 +13,7 @@ import { NavGroup } from "./nav-group";
 import { sidebarData } from "./data/sidebar-data";
 import { Logo } from "@/components/logo";
 import { useGetChats } from "@/hooks/use-chat";
+import { Info } from "lucide-react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
@@ -25,6 +26,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavGroup {...sidebarData.navGroups[0]} />
+
         {isChatsLoading ? (
           <SidebarMenu>
             {Array.from({ length: 10 }).map((_, index) => (
@@ -48,6 +50,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             ]}
           />
         )}
+
+        {chats && chats.length === 0 && open ? (
+          <span className="flex items-center justify-start gap-2 px-4 text-sm text-yellow-600">
+            {" "}
+            <Info size={15} /> No Previous Chats
+          </span>
+        ) : null}
+
         {/* <NavGroup {...sidebarData.navGroups[2]} /> */}
       </SidebarContent>
       <SidebarRail />

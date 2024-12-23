@@ -10,21 +10,73 @@ import { AnimatePresence } from "framer-motion";
 import { useGetMessagesByChatId } from "@/hooks/use-chat";
 import { useParams } from "next/navigation";
 import { useChatStore } from "@/stores/use-chat";
-import { useIsMutating } from "@tanstack/react-query";
+import { useIsMutating, useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/axios";
+import logger from "@/lib/logger";
+
+enum ReplyStatus {
+  PENDING = "PENDING",
+  SENT = "SENT",
+  RECEIVED = "RECEIVED",
+  FAILED = "FAILED",
+}
+interface BotReply {
+  id: string;
+  content: string | null;
+  created_at: Date;
+  updated_at: Date;
+  status: ReplyStatus;
+  message_id: string;
+}
 
 export default function ChatList() {
+  const queryClient = useQueryClient();
   const { id } = useParams();
   const isMutating = useIsMutating({ mutationKey: ["sendMessage"] });
   const { data: messages, isLoading: isLoadingMessages } =
     useGetMessagesByChatId(id?.toString());
-
   const setChatId = useChatStore((state) => state.setId);
+  const botReplyId = useChatStore((state) => state.botReplyId);
+  const setBotReplyId = useChatStore((state) => state.setBotReplyId);
 
   useEffect(() => {
     if (!id) return;
     setChatId(id?.toString());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  const { data, isLoading: isBotReplyLoading } = useQuery({
+    queryKey: ["bot-reply", { botReplyId }],
+    queryFn: async () => {
+      const response = await api.get<BotReply>(
+        `/api/v1/chat/bot-reply/${botReplyId}`,
+      );
+      logger.info("bot-reply data", response.data);
+      return response.data;
+    },
+    refetchInterval: 1000,
+    enabled: !!botReplyId,
+  });
+
+  useEffect(() => {
+    const invalidateQuery = async () => {
+      console.log(`first`);
+      await queryClient.invalidateQueries({
+        queryKey: ["messages", { chatId: id }],
+      });
+      console.log(`second`);
+    };
+
+    logger.info("data in useEffect", data);
+
+    if (!isBotReplyLoading && data) {
+      if (data?.status === "SENT") {
+        invalidateQuery();
+        setBotReplyId(null);
+        logger.info("setting bot reply id to null, new data", data);
+      }
+    }
+  }, [isBotReplyLoading, data]);
 
   if (isLoadingMessages) {
     return (
@@ -51,18 +103,20 @@ export default function ChatList() {
               </ChatItemBody>
             </ChatItemContainer>
             {/* Bot */}
-            <ChatItemContainer align={"left"}>
-              <ChatItemBody className={"max-w-[80%] gap-2"}>
-                <ChatItemSenderAvatar icon="assistant" />
-                <ChatItemContent className="border-none bg-transparent">
-                  {message.bot_reply.content || "EMPTY RESPONSE"}
-                </ChatItemContent>
-              </ChatItemBody>
-            </ChatItemContainer>
+            {data?.status != "PENDING" ? (
+              <ChatItemContainer align={"left"}>
+                <ChatItemBody className={"max-w-[80%] gap-2"}>
+                  <ChatItemSenderAvatar icon="assistant" />
+                  <ChatItemContent className="border-none bg-transparent">
+                    {message.bot_reply.content || ""}
+                  </ChatItemContent>
+                </ChatItemBody>
+              </ChatItemContainer>
+            ) : null}
           </div>
         ))}
 
-        {isMutating ? (
+        {isMutating || isBotReplyLoading ? (
           <ChatItemContainer align={"left"}>
             <ChatItemBody className={"max-w-[80%] gap-2"}>
               <ChatItemSenderAvatar icon="assistant" />
