@@ -94,7 +94,8 @@ export default function ChatList() {
       | "getUserPublicKey"
       | "getBalanceByPublicKey"
       | "sendSol"
-      | "swapToken",
+      | "swapToken"
+      | "message",
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any,
   ): { component?: JSX.Element; text?: string } => {
@@ -104,6 +105,17 @@ export default function ChatList() {
           text:
             data?.actionResult?.data?.balance ||
             "ERROR IN GETTING USER BALANCE",
+        };
+
+      case "getBalanceByPublicKey":
+        return {
+          text:
+            data?.actionResult?.data?.balance ||
+            "ERROR IN GETTING USER BALANCE",
+        };
+      case "message":
+        return {
+          text: data?.data || "ERROR IN MESSAGE",
         };
 
       case "sendSol":
@@ -117,8 +129,17 @@ export default function ChatList() {
               <ChatItemContent className="flex flex-row items-center justify-center gap-2">
                 Your user now has received {data?.amount || "ERROR"} SOL
               </ChatItemContent>
-              <ChatItemContent className="bg-transparent border-none p-0">
-                <Button onClick={() => window.open(`https://explorer.solana.com/tx/${data?.actionResult?.data?.txHash}?cluster=devnet`)}> View Transaction </Button>
+              <ChatItemContent className="border-none bg-transparent p-0">
+                <Button
+                  onClick={() =>
+                    window.open(
+                      `https://explorer.solana.com/tx/${data?.actionResult?.data?.txHash}?cluster=devnet`,
+                    )
+                  }
+                >
+                  {" "}
+                  View Transaction{" "}
+                </Button>
               </ChatItemContent>
             </div>
           ),
