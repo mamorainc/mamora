@@ -30,7 +30,16 @@ export const useGetMessagesByChatId = (id?: string) => {
             const response = await api.get<Message[]>(`/api/v1/chat/${id || chatId}`)
             return response.data
         },
-        enabled: !!id || !!chatId
+        enabled: !!id || !!chatId,
+        select: (data) => {
+            return data.map((item) => ({
+                ...item,
+                bot_reply: {
+                    ...item.bot_reply,
+                    content: JSON.parse(item.bot_reply.content),
+                },
+            }));
+        },
     })
 }
 

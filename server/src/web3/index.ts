@@ -13,6 +13,7 @@ import bs58 from 'bs58';
 
 // import { Wallet } from '@project-serum/anchor';
 import axios from 'axios';
+import Moralis from 'moralis';
 
 enum Network {
   DEV,
@@ -184,12 +185,17 @@ const swapToken = async (
     const txid = await connection.sendRawTransaction(transaction.serialize(), {
       skipPreflight: true,
       maxRetries: 2,
+      preflightCommitment: 'confirmed',
     });
-    await connection.confirmTransaction({
-      blockhash: latestBlockhash.blockhash,
-      lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-      signature: txid,
-    });
+    await connection.confirmTransaction(
+      {
+        blockhash: latestBlockhash.blockhash,
+        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+        signature: txid,
+      },
+      'confirmed'
+    );
+
 
     return createResponse(Status.Success, { txHash: txid });
   } catch (error: unknown) {
@@ -198,4 +204,66 @@ const swapToken = async (
   }
 };
 
-export { getBalance, sendSol, swapToken };
+const getPrice = async (
+  network: Network,
+  tokenAddress: string
+): Promise<{ status: Status; error?: string; data: { usdPrice?: number } }> => {
+  try {
+    if (network !== Network.DEV && network !== Network.MAIN) {
+      return createResponse(Status.Failure, {}, 'Invalid network specified.');
+    }
+
+    const chain = network === Network.DEV ? 'devnet' : 'mainnet';
+
+    const response = await Moralis.SolApi.token.getTokenPrice({
+      network: chain,
+      address: tokenAddress,
+    });
+
+    const usdPrice = response?.raw.usdPrice || 0;
+
+    return createResponse(Status.Success, { usdPrice }, '');
+  } catch (error: unknown) {
+    // Handle and log errors
+    const errorMsg =
+      error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Error fetching token price:', errorMsg);
+
+    // Return a failure response
+    return createResponse(Status.Failure, {}, 'Failed to get token price.');
+  }
+};
+
+const getWalletPorfolio = async (
+  network: Network,
+  address: string
+): Promise<{ status: Status; error?: string; data: { portfolio?: any } }> => {
+  try {
+    if (network !== Network.DEV && network !== Network.MAIN) {
+      return createResponse(Status.Failure, {}, 'Invalid network specified.');
+    }
+
+    const chain = network === Network.DEV ? 'devnet' : 'mainnet';
+
+    const response = await Moralis.SolApi.account.getPortfolio({
+      network: chain,
+      address: address,
+    });
+
+    return createResponse(Status.Success, { portfolio: response.raw }, '');
+  } catch (error: unknown) {
+    // Handle and log errors
+    const errorMsg =
+      error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Error fetching wallet portfolio:', errorMsg);
+
+    // Return a failure response
+    return createResponse(
+      Status.Failure,
+      {},
+      'Failed to fetch wallet portfolio.'
+    );
+  }
+};
+
+export { getBalance, sendSol, swapToken, getPrice, getWalletPorfolio };

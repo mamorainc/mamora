@@ -236,7 +236,7 @@ async function handleSolanaResponse(
           return `Token swap between ${fromTokenSymbol} and ${toTokenSymbol} is not supported`;
         }
         const actionResult = await swapToken(
-          netEnum,
+          Network.MAIN,
           user.private_key,
           amount,
           fromToken.addr,

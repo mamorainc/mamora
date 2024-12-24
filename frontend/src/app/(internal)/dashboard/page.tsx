@@ -9,7 +9,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { IconWallet, IconCoin, IconChartPie } from "@tabler/icons-react";
+import { Coins, DollarSign, Layers } from "lucide-react";
 
 const portfolioData = {
   totalBalance: "45,231.89",
@@ -41,31 +41,14 @@ const portfolioData = {
   ],
 };
 
-const stats = [
-  {
-    title: "Total Value",
-    value: "$45,231.89",
-    change: "+2.5%",
-    icon: <IconWallet className="h-4 w-4" />,
-    isPositive: true,
-  },
-  {
-    title: "24h Change",
-    value: "$1,231.89",
-    change: "+2.5%",
-    icon: <IconChartPie className="h-4 w-4" />,
-    isPositive: true,
-  },
-  {
-    title: "Total Tokens",
-    value: "3",
-    change: "0",
-    icon: <IconCoin className="h-4 w-4" />,
-    isPositive: true,
-  },
-];
-
 export default function DashboardPage() {
+  const {
+    data: walletData,
+    isLoading: isWalletDataLoading,
+    error: walletDataError,
+  } = useGetWalletData();
+  useGetWalletData();
+
   return (
     <div className="flex-1 space-y-4 overflow-y-auto p-4 pt-6 md:p-8">
       <div className="flex items-center justify-between space-y-2">
@@ -74,42 +57,49 @@ export default function DashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        {stats.map((stat, index) => (
-          <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.title}
-              </CardTitle>
-              {stat.icon}
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                <span
-                  className={
-                    stat.isPositive ? "text-green-500" : "text-red-500"
-                  }
-                >
-                  {stat.change}
-                </span>{" "}
-                from last 24h
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+        {isWalletDataLoading ? (
+          Array(3)
+            .fill(0)
+            .map((_, i) => (
+              <Skeleton key={i} className="col-span-full h-36 md:col-span-1" />
+            ))
+        ) : walletDataError ? (
+          <p className="text-sm font-medium text-destructive">
+            {" "}
+            {walletDataError?.message ?? "ERROR IN GETTING DASBHAORD DATA"}
+          </p>
+        ) : (
+          <>
+            <StatsCard
+              title="SOL Price"
+              value={walletData?.data?.usdPrice}
+              icon={<DollarSign size={20} />}
+            />
+            <StatsCard
+              title="Total Tokens"
+              value={walletData?.data?.tokens.length}
+              icon={<Coins size={20} />}
+            />
+            <StatsCard
+              title="Total NFTs"
+              value={walletData?.data?.nfts.length}
+              icon={<Layers size={20} />}
+            />
+          </>
+        )}
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="tokens" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
+          {/* <TabsTrigger value="overview">Overview</TabsTrigger> */}
           <TabsTrigger value="tokens">Tokens</TabsTrigger>
+          <TabsTrigger value="nfts">NFTs</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
+        {/* <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
             <WalletBalanceChart />
 
-            {/* Token List */}
             <Card className="col-span-full md:col-span-1 lg:col-span-3">
               <CardHeader>
                 <CardTitle>Token Holdings</CardTitle>
@@ -147,7 +137,7 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+        </TabsContent> */}
 
         <TabsContent value="tokens">
           <Card>
@@ -158,33 +148,99 @@ export default function DashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-8">
-                {portfolioData.tokens.map((token) => (
-                  <div key={token.symbol} className="flex items-center">
-                    <Avatar className="h-9 w-9">
-                      <AvatarFallback>{token.symbol[0]}</AvatarFallback>
-                    </Avatar>
-                    <div className="ml-4 space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {token.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {token.balance} {token.symbol}
-                      </p>
+              <div className="space-y-6">
+                {isWalletDataLoading ? (
+                  Array(3)
+                    .fill(0)
+                    .map((_, i) => (
+                      <Skeleton
+                        key={i}
+                        className="col-span-full h-20 md:col-span-1"
+                      />
+                    ))
+                ) : walletDataError ? (
+                  <p className="text-sm font-medium text-destructive">
+                    {walletDataError?.message ??
+                      "ERROR IN GETTING DASBHAORD DATA"}
+                  </p>
+                ) : walletData?.data?.tokens?.length ? (
+                  walletData?.data?.tokens.map((token) => (
+                    <div key={token.mint} className="flex items-center">
+                      <Avatar className="h-9 w-9">
+                        <AvatarFallback>{token.symbol[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex w-full items-center justify-between">
+                        <div className="ml-4 space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {token.name}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {token.symbol}
+                          </p>
+                        </div>
+
+                        <span>{token?.amount}</span>
+                      </div>
                     </div>
-                    <div className="ml-auto text-right">
-                      <p className="text-sm font-medium leading-none">
-                        ${token.value}
-                      </p>
-                      <p
-                        className={`text-sm ${token.change >= 0 ? "text-green-500" : "text-red-500"}`}
-                      >
-                        {token.change >= 0 ? "+" : ""}
-                        {token.change}%
-                      </p>
+                  ))
+                ) : (
+                  <p className="text-sm font-medium text-muted-foreground">
+                    No Tokens found
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="nfts">
+          <Card>
+            <CardHeader>
+              <CardTitle>All NFTs</CardTitle>
+              <CardDescription>
+                A detailed list of all your nfts holdings
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {isWalletDataLoading ? (
+                  Array(3)
+                    .fill(0)
+                    .map((_, i) => (
+                      <Skeleton
+                        key={i}
+                        className="col-span-full h-20 md:col-span-1"
+                      />
+                    ))
+                ) : walletDataError ? (
+                  <p className="text-sm font-medium text-destructive">
+                    {walletDataError?.message ??
+                      "ERROR IN GETTING DASBHAORD DATA"}
+                  </p>
+                ) : walletData?.data?.nfts?.length ? (
+                  walletData?.data?.nfts.map((nft) => (
+                    <div key={nft.mint} className="flex items-center">
+                      <Avatar className="h-9 w-9">
+                        <AvatarFallback>{nft.symbol[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex w-full items-center justify-between">
+                        <div className="ml-4 space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {nft.name}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {nft.symbol}
+                          </p>
+                        </div>
+
+                        <span>{nft?.amount}</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-sm font-medium text-muted-foreground">
+                    No NFTs found
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -195,6 +251,9 @@ export default function DashboardPage() {
 }
 
 import { AreaChart, Area } from "recharts";
+import { useGetWalletData } from "@/hooks/use-wallet";
+import { StatsCard } from "@/components/dashboard/stats-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const data = [
   { date: "Jan 1", balance: 5200 },

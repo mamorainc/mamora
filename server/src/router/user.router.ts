@@ -3,6 +3,7 @@ import { authMiddleware } from '../middleware';
 import { callService } from '../service/call.service';
 import {
   getUserDetails,
+  getWalletData,
   signInService,
   signUpService,
 } from '../service/user.service';
@@ -34,6 +35,10 @@ userRouter.post('/logout', async (req, res) => {
 
 userRouter.get('/me', authMiddleware, async (req, res) => {
   await callService(getUserDetails, req, res);
+});
+
+userRouter.get('/wallet', authMiddleware, async (req, res) => {
+  await callService(getWalletData, req, res);
 });
 
 export default userRouter;
