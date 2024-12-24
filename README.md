@@ -59,5 +59,4 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ---
 
-**Mamora** ✨⚡️🌐 — Simplifying Solana interactions, one task at a time! 🌟🌐✨
-
+**Mamora** ✨⚡️🌐 — Simplifying Solana interactions, one task at a time! 🌟🌐✨.
