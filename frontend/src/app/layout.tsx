@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Mamora",
   description: "A chat bot to automate you Solana work flows",
 };
-
+  
 export default function RootLayout({
   children,
 }: Readonly<{

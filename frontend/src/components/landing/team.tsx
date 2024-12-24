@@ -69,10 +69,10 @@ export const Team = () => {
       lastName: "Kumar Kar",
       positions: ["Software Engineer"],
       socialNetworks: [
-        // {
-        //   name: "LinkedIn",
-        //   url: "https://www.linkedin.com/",
-        // },
+        {
+          name: "LinkedIn",
+          url: "https://www.linkedin.com/in/kaishuro/",
+        },
         {
           name: "Github",
           url: "https://github.com/PratyushaKumarKar",
