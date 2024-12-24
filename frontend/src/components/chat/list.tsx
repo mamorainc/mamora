@@ -116,19 +116,19 @@ export default function ChatList() {
       case "getUserBalance":
         return {
           text:
-            data?.actionResult?.data?.balance ||
+            data?.actionResult?.data?.balance ??
             "ERROR IN GETTING USER BALANCE",
         };
 
       case "getBalanceByPublicKey":
         return {
           text:
-            data?.actionResult?.data?.balance ||
+            data?.actionResult?.data?.balance ??
             "ERROR IN GETTING USER BALANCE",
         };
       case "message":
         return {
-          text: data?.data || "ERROR IN MESSAGE",
+          text: data?.data ?? "ERROR IN MESSAGE",
         };
       case "swapToken":
         return {
