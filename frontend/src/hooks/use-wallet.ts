@@ -9,7 +9,7 @@ export const useGetWalletData = () => {
   return useQuery({
     queryKey: ["wallet"],
     queryFn: async () => {
-      const response = await api.get<WalletData>(`/api/v1/user/wallet?wallet=EJpLyTeE8XHG9CeREeHd6pr6hNhaRnTRJx4Z5DPhEJJ6&chain=mainnet`)
+      const response = await api.get<WalletData>(`/api/v1/user/wallet?wallet=${userWallet}&chain=mainnet`)
       return response.data
     },
     enabled: !!isAuthenticated,

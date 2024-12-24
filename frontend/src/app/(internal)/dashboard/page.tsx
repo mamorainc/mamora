@@ -11,36 +11,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Coins, DollarSign, Layers } from "lucide-react";
 
-const portfolioData = {
-  totalBalance: "45,231.89",
-  walletAddress: "0x1234...5678",
-  changePercentage: 2.5,
-  isPositive: true,
-  tokens: [
-    {
-      name: "Ethereum",
-      symbol: "ETH",
-      balance: "12.5",
-      value: "25,000",
-      change: 3.2,
-    },
-    {
-      name: "USD Coin",
-      symbol: "USDC",
-      balance: "15000",
-      value: "15,000",
-      change: 0,
-    },
-    {
-      name: "Chainlink",
-      symbol: "LINK",
-      balance: "500",
-      value: "5,231.89",
-      change: -1.2,
-    },
-  ],
-};
-
 export default function DashboardPage() {
   const {
     data: walletData,
@@ -285,6 +255,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function WalletBalanceChart() {
   const currentBalance = data[data.length - 1].balance;
   const previousBalance = data[data.length - 2].balance;
