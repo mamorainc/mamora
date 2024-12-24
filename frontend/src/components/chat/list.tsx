@@ -17,6 +17,7 @@ import { CircleCheck, MoveRight } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAuth } from "@/stores/use-auth";
 import { shortenWalletAddress } from "@/lib/utils";
+import { Skeleton } from "../ui/skeleton";
 
 enum ReplyStatus {
   PENDING = "PENDING",
@@ -37,8 +38,14 @@ export default function ChatList() {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const isMutating = useIsMutating({ mutationKey: ["sendMessage"] });
-  const { data: messages, isLoading: isMessagesLoading } =
-    useGetMessagesByChatId(id?.toString());
+  const {
+    data: messages,
+    isLoading: isMessagesLoading,
+    isRefetching: isMessagesRefetching,
+    isFetching: isMessagesFetching,
+    error: messagesError,
+    isError: isMessagesError,
+  } = useGetMessagesByChatId(id?.toString());
   const setChatId = useChatStore((state) => state.setId);
   const botReplyId = useChatStore((state) => state.botReplyId);
   const setBotReplyId = useChatStore((state) => state.setBotReplyId);
@@ -78,11 +85,10 @@ export default function ChatList() {
 
   useEffect(() => {
     const invalidateQuery = async () => {
-      console.log(`first`);
       await queryClient.invalidateQueries({
         queryKey: ["messages", { chatId: id }],
       });
-      console.log(`second`);
+      setBotReplyId(null);
     };
 
     logger.info("data in useEffect", data);
@@ -90,7 +96,6 @@ export default function ChatList() {
     if (!isBotReplyLoading && data) {
       if (data?.status === "SENT") {
         invalidateQuery();
-        setBotReplyId(null);
         logger.info("setting bot reply id to null, new data", data);
       }
     }
@@ -228,10 +233,42 @@ export default function ChatList() {
   if (isMessagesLoading) {
     return (
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-20 p-4 md:p-0">
-        Messages Loading...
+        {Array.from({ length: 10 }).map((_, i) => {
+          return i % 2 === 0 ? (
+            <ChatItemContainer key={i} align={"right"}>
+              <ChatItemBody
+                className={"w-full gap-2 bg-transparent lg:max-w-[40%]"}
+              >
+                <ChatItemContent className="flex w-full flex-row items-center justify-center gap-2 border-none bg-transparent p-0">
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </ChatItemContent>
+              </ChatItemBody>
+            </ChatItemContainer>
+          ) : (
+            <ChatItemContainer key={i} align={"left"}>
+              <ChatItemBody
+                className={"w-full gap-2 bg-transparent lg:max-w-[40%]"}
+              >
+                <ChatItemContent className="flex w-full flex-row items-center justify-center gap-2 border-none bg-transparent p-0">
+                  <Skeleton className="!aspect-square !size-10 rounded-full" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </ChatItemContent>
+              </ChatItemBody>
+            </ChatItemContainer>
+          );
+        })}
       </div>
     );
   }
+
+  if (isMessagesError) {
+    return (
+      <p className="my-4 text-sm font-medium text-destructive">
+        {messagesError?.message || "ERROR IN GETTING MESSAGES"}
+      </p>
+    );
+  }
+
   return (
     <AnimatePresence initial={false} mode="popLayout">
       <div
@@ -255,43 +292,58 @@ export default function ChatList() {
               </ChatItemBody>
             </ChatItemContainer>
             {/* Bot */}
-            {data?.status != "PENDING" ? (
-              <ChatItemContainer align={"left"}>
-                <ChatItemBody className={"max-w-[80%] gap-2"}>
-                  <ChatItemSenderAvatar icon="assistant" />
-                  <ChatItemContent className="break-all border-none bg-transparent">
-                    {
-                      getData(
-                        message.bot_reply.content.type,
-                        message.bot_reply.content,
-                      ).text
-                    }
-                    {
-                      getData(
-                        message.bot_reply.content.type,
-                        message.bot_reply.content,
-                      ).component
-                    }
-                  </ChatItemContent>
-                </ChatItemBody>
-              </ChatItemContainer>
-            ) : null}
+            <ChatItemContainer align={"left"}>
+              <ChatItemBody className={"max-w-[80%] gap-2"}>
+                <ChatItemSenderAvatar icon="assistant" />
+                <ChatItemContent className="break-all border-none bg-transparent">
+                  {
+                    getData(
+                      message.bot_reply.content.type,
+                      message.bot_reply.content,
+                    ).text
+                  }
+                  {
+                    getData(
+                      message.bot_reply.content.type,
+                      message.bot_reply.content,
+                    ).component
+                  }
+                </ChatItemContent>
+              </ChatItemBody>
+            </ChatItemContainer>
           </div>
         ))}
 
-        {isMutating || isBotReplyLoading ? (
-          <ChatItemContainer align={"left"}>
-            <ChatItemBody className={"max-w-[80%] gap-2"}>
-              <ChatItemSenderAvatar icon="assistant" />
-              <ChatItemContent className="border-none bg-transparent">
-                <div className="flex w-max items-center gap-2">
-                  <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30"></div>
-                  <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30 [animation-delay:-.3s]"></div>
-                  <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30 [animation-delay:-.5s]"></div>
-                </div>
-              </ChatItemContent>
-            </ChatItemBody>
-          </ChatItemContainer>
+        {isBotReplyLoading ||
+        isMutating ||
+        isMessagesRefetching ||
+        isMessagesFetching ? (
+          <>
+            <ChatItemContainer align={"right"}>
+              <ChatItemBody className={"max-w-[80%] gap-2"}>
+                <ChatItemContent className="border-none bg-transparent">
+                  <div className="flex w-max items-center gap-2">
+                    <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30"></div>
+                    <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30 [animation-delay:-.3s]"></div>
+                    <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30 [animation-delay:-.5s]"></div>
+                  </div>
+                </ChatItemContent>
+                <ChatItemSenderAvatar icon="user" />
+              </ChatItemBody>
+            </ChatItemContainer>
+            <ChatItemContainer align={"left"}>
+              <ChatItemBody className={"max-w-[80%] gap-2"}>
+                <ChatItemSenderAvatar icon="assistant" />
+                <ChatItemContent className="border-none bg-transparent">
+                  <div className="flex w-max items-center gap-2">
+                    <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30"></div>
+                    <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30 [animation-delay:-.3s]"></div>
+                    <div className="size-2 animate-bounce rounded-full bg-secondary-foreground/30 [animation-delay:-.5s]"></div>
+                  </div>
+                </ChatItemContent>
+              </ChatItemBody>
+            </ChatItemContainer>
+          </>
         ) : null}
         <div ref={bottomRef} />
       </div>

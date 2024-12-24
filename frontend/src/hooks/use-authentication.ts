@@ -1,5 +1,5 @@
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/axios'
 import { useAuth } from '@/stores/use-auth'
 import { useRouter } from 'next/navigation'
@@ -96,6 +96,7 @@ export function useLogin(callbacks?: AuthHookOptions) {
 export function useLogout(callbacks?: AuthHookOptions) {
     const router = useRouter()
     const { logout } = useAuth()
+    const queryClient = useQueryClient()
 
     return useMutation({
         mutationFn: async () => {
@@ -104,6 +105,7 @@ export function useLogout(callbacks?: AuthHookOptions) {
         },
         onSuccess: () => {
             logout()
+            queryClient.clear()
             router.push('/')
             if (callbacks?.onSuccess) {
                 callbacks?.onSuccess()

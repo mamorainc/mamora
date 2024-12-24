@@ -72,23 +72,28 @@ const signUpService = async (req: Request): Promise<ServiceResponse> => {
 };
 
 const signInService = async (req: Request): Promise<ServiceResponse> => {
-  const { email, password } = req.body;
-  const user = await prisma.user.findFirst({
-    where: { email },
-  });
-  if (!user) {
+  try {
+    const { email, password } = req.body;
+    const user = await prisma.user.findFirst({
+      where: { email },
+    });
+    if (!user) {
+      return createResponse(404, 'Error: User not found');
+    }
+    const isValidPassword = await compare(password, user.password);
+    if (!isValidPassword) {
+      return createResponse(401, 'Error: Invalid password');
+    }
+    const token = generateToken({ id: user.id, email: user.email });
+    const { password: _, private_key, ...userWithoutPassword } = user;
+    return createResponse(200, 'User signed in successfully', {
+      token,
+      user: userWithoutPassword,
+    });
+  } catch (error) {
+    console.log(error)
     return createResponse(404, 'Error: User not found');
   }
-  const isValidPassword = await compare(password, user.password);
-  if (!isValidPassword) {
-    return createResponse(401, 'Error: Invalid password');
-  }
-  const token = generateToken({ id: user.id, email: user.email });
-  const { password: _, private_key, ...userWithoutPassword } = user;
-  return createResponse(200, 'User signed in successfully', {
-    token,
-    user: userWithoutPassword,
-  });
 };
 
 const getUserDetails = async (req: Request): Promise<ServiceResponse> => {
@@ -204,12 +209,12 @@ const getWalletData = async (
     const address = wallet
       ? wallet
       : await (async () => {
-          const user = await prisma.user.findFirst({
-            where: { id: req.userId },
-          });
-          if (!user) throw new Error('User not found');
-          return user.public_key;
-        })();
+        const user = await prisma.user.findFirst({
+          where: { id: req.userId },
+        });
+        if (!user) throw new Error('User not found');
+        return user.public_key;
+      })();
 
     if (!PublicKey.isOnCurve(address)) {
       return createResponse(411, 'Error: Invalid public key format.');
@@ -230,7 +235,7 @@ const getWalletData = async (
     // console.error('Error in getWalletData:', error.message || error);
     return createResponse(
       400,
-     'An error occurred while fetching wallet data.'
+      'An error occurred while fetching wallet data.'
     );
   }
 };

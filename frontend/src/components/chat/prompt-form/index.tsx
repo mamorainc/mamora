@@ -12,12 +12,10 @@ import { promptformSchema, PromptformValues } from "./schema";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useSendMessage } from "@/hooks/use-chat";
 import { useChatStore } from "@/stores/use-chat";
-import { useQueryClient } from "@tanstack/react-query";
 import logger from "@/lib/logger";
 import { Input } from "@/components/ui/input";
 
 export function PromptForm() {
-  const queryClient = useQueryClient();
   const chatId = useChatStore((state) => state.id);
   const setBotReplyId = useChatStore((state) => state.setBotReplyId);
   const form = useForm<PromptformValues>({
@@ -41,9 +39,6 @@ export function PromptForm() {
       });
       setBotReplyId(message.botReplyId);
       logger.success("message sent", message);
-      await queryClient.invalidateQueries({
-        queryKey: ["messages", { chatId: chatId?.toString() }],
-      });
       form.reset({ message: "" });
     } catch (error) {
       console.log(error);

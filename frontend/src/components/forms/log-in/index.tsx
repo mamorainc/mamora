@@ -41,7 +41,7 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
   function onSubmit(data: LogInFormSchema) {
     login(data);
     toast({
-      title: "Sign In Completed!",
+      title: "Log In Completed!",
     });
     // router.replace("/dashboard");
   }
