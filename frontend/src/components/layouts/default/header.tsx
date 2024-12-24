@@ -64,7 +64,7 @@ export const Navbar = () => {
                 <SheetTitle className="flex items-center">
                   <Link href="/" className="flex items-center">
                     <ChevronsDown className="mr-2 h-9 w-9 rounded-lg border border-secondary bg-gradient-to-tr from-primary via-primary/70 to-primary text-white" />
-                    Shadcn
+                    Mamora
                   </Link>
                 </SheetTitle>
               </SheetHeader>
