@@ -31,15 +31,15 @@ export const Team = () => {
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://www.linkedin.com/",
+          url: "https://www.linkedin.com/in/harsimran-d/",
         },
         {
           name: "Github",
-          url: "https://github.com/",
+          url: "https://github.com/harsimran-d",
         },
         {
           name: "X",
-          url: "https://x.com/",
+          url: "https://x.com/harsimran_d",
         },
       ],
     },
@@ -47,19 +47,19 @@ export const Team = () => {
       imageUrl: "/assets/images/0xnas.jpg",
       firstName: "0xnas",
       lastName: "",
-      positions: ["Software Engineer", "Gang Leader"],
+      positions: ["Software Engineer"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://www.linkedin.com/",
+          url: "https://www.linkedin.com/in/anareshrao/",
         },
         {
           name: "Github",
-          url: "https://github.com/",
+          url: "https://github.com/iamnas",
         },
         {
           name: "X",
-          url: "https://x.com/",
+          url: "https://x.com/0xnas_eth",
         },
       ],
     },
@@ -69,17 +69,17 @@ export const Team = () => {
       lastName: "Kumar Kar",
       positions: ["Software Engineer"],
       socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/",
-        },
+        // {
+        //   name: "LinkedIn",
+        //   url: "https://www.linkedin.com/",
+        // },
         {
           name: "Github",
-          url: "https://github.com/",
+          url: "https://github.com/PratyushaKumarKar",
         },
         {
           name: "X",
-          url: "https://x.com/",
+          url: "https://x.com/pratyushkai",
         },
       ],
     },
@@ -91,15 +91,15 @@ export const Team = () => {
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://www.linkedin.com/",
+          url: "https://www.linkedin.com/in/anurag-kochar-527696242/",
         },
         {
           name: "Github",
-          url: "https://github.com/",
+          url: "https://github.com/anurag-kochar-1",
         },
         {
           name: "X",
-          url: "https://x.com/",
+          url: "https://x.com/anurag__kochar",
         },
       ],
     },

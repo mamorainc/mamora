@@ -4,8 +4,6 @@ import { useAuth } from "@/stores/use-auth";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export function useCheckAuth() {
   const router = useRouter();
   const pathname = usePathname();
@@ -13,7 +11,6 @@ export function useCheckAuth() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      await sleep(1500);
       try {
         const response = await api.get("/api/v1/user/me");
         if (response.data?.data?.user) {
@@ -24,6 +21,7 @@ export function useCheckAuth() {
           }
         } else {
           logout();
+          router.replace("/");
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {

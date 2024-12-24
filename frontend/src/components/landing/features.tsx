@@ -9,53 +9,64 @@ import {
   IconHistory,
   IconMessageChatbot,
 } from "@tabler/icons-react";
+import { Badge } from "../ui/badge";
+
 const features = [
   {
     title: "AI Chat Assistant",
     description:
-      "Get instant answers about blockchain, DeFi, and market trends with our advanced AI.",
+      "Get instant insights about Solana blockchain, DeFi protocols, and real-time market trends through our advanced AI.",
     icon: <IconRobot />,
+    isComingSoon: false,
   },
   {
     title: "Cross-Chain Support",
     description:
-      "Seamlessly interact with multiple EVM chains including Ethereum, BSC, and Polygon.",
+      "Connect and interact seamlessly across multiple blockchain networks including Solana, Ethereum, and Polygon.",
     icon: <IconLink />,
+    isComingSoon: true,
   },
   {
-    title: "Smart Token Swaps",
+    title: "Token Swaps",
     description:
-      "Execute trades with AI-powered price optimization across multiple DEXes.",
+      "Exchange tokens effortlessly with optimal rates, such as SOL to USDC or any other supported pairs.",
     icon: <IconArrowsShuffle />,
+    isComingSoon: true,
   },
   {
-    title: "Portfolio Tracking",
+    title: "Solana Transfers",
     description:
-      "Track and analyze your crypto holdings with real-time performance metrics.",
-    icon: <IconChartPie />,
-  },
-  {
-    title: "Market Intelligence",
-    description:
-      "Access real-time market data, trends, and AI-generated insights.",
+      "Send SOL securely to any Solana wallet address with real-time transaction confirmation.",
     icon: <IconChartLine />,
+    isComingSoon: false,
+  },
+  {
+    title: "Portfolio Analytics",
+    description:
+      "Monitor and analyze your crypto portfolio with comprehensive real-time performance metrics.",
+    icon: <IconChartPie />,
+    isComingSoon: true,
   },
   {
     title: "Smart Wallet",
     description:
-      "Manage assets securely with AI-powered suggestions and risk analysis.",
+      "Secure asset management enhanced by AI-powered insights and proactive risk analysis.",
     icon: <IconWallet />,
+    isComingSoon: true,
   },
   {
     title: "Transaction History",
     description:
-      "View and analyze your complete transaction history across all chains.",
+      "Access and analyze your complete transaction history with detailed insights across networks.",
     icon: <IconHistory />,
+    isComingSoon: true,
   },
   {
     title: "24/7 AI Support",
-    description: "Get instant help with our AI assistant that never sleeps.",
+    description:
+      "Access immediate assistance through our always-available AI support system.",
     icon: <IconMessageChatbot />,
+    isComingSoon: true,
   },
 ];
 
@@ -77,11 +88,13 @@ const Feature = ({
   description,
   icon,
   index,
+  isComingSoon,
 }: {
   title: string;
   description: string;
   icon: React.ReactNode;
   index: number;
+  isComingSoon: boolean;
 }) => {
   return (
     <div
@@ -91,6 +104,8 @@ const Feature = ({
         index < 4 && "dark:border-neutral-800 lg:border-b",
       )}
     >
+      {isComingSoon && <Badge variant={"outline"} className="absolute top-4 right-4"> Coming Soon</Badge>}
+
       {index < 4 && (
         <div className="pointer-events-none absolute inset-0 h-full w-full bg-gradient-to-t from-neutral-100 to-transparent opacity-0 transition duration-200 group-hover/feature:opacity-100 dark:from-neutral-800" />
       )}

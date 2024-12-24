@@ -34,12 +34,8 @@ const routeList: RouteProps[] = [
     label: "Team",
   },
   {
-    href: "/#contact",
-    label: "Contact",
-  },
-  {
-    href: "/#faq",
-    label: "FAQs",
+    href: "https://github.com/mamorainc/mamora",
+    label: "Github",
   },
 ];
 export const Navbar = () => {

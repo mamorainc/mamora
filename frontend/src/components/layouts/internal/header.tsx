@@ -3,9 +3,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
-import { useChatStore } from "@/stores/use-chat";
-import { Button } from "@/components/ui/button";
 
 interface HeaderProps extends React.HTMLAttributes<React.ElementRef<"header">> {
   sticky?: boolean;
@@ -14,7 +11,6 @@ interface HeaderProps extends React.HTMLAttributes<React.ElementRef<"header">> {
 export const Header = React.forwardRef<React.ElementRef<"header">, HeaderProps>(
   ({ className, sticky, children, ...props }, ref) => {
     const [offset, setOffset] = React.useState<number>(0);
-    const chatStore = useChatStore();
 
     React.useEffect(() => {
       const onScroll = () => {
@@ -40,7 +36,7 @@ export const Header = React.forwardRef<React.ElementRef<"header">, HeaderProps>(
         {...props}
       >
         <SidebarTrigger variant="outline" className="scale-125 sm:scale-100" />
-        <Separator orientation="vertical" className="hidden h-6 md:block" />
+        {/* <Separator orientation="vertical" className="hidden h-6 md:block" />
         <Button
           onClick={() => {
             console.log(chatStore);
@@ -48,7 +44,7 @@ export const Header = React.forwardRef<React.ElementRef<"header">, HeaderProps>(
         >
           {" "}
           L{" "}
-        </Button>
+        </Button> */}
         {children}
       </header>
     );

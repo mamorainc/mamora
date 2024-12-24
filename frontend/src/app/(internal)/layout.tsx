@@ -7,7 +7,6 @@ import { ReactNode, Suspense } from "react";
 import { Header } from "@/components/layouts/internal/header";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Main } from "@/components/layouts/internal";
-import { Search } from "@/components/search";
 import { ProfileDropdown } from "@/components/profile-dropdown";
 
 export default function InternalLayout({ children }: { children: ReactNode }) {
@@ -28,7 +27,7 @@ export default function InternalLayout({ children }: { children: ReactNode }) {
             )}
           >
             <Header sticky>
-              <Search />
+              {/* <Search /> */}
               <div className="ml-auto flex items-center space-x-4">
                 <ThemeToggle className="hidden md:flex" />
                 <ProfileDropdown />
