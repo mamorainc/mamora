@@ -10,8 +10,10 @@ const googleClient = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID!,
   process.env.GOOGLE_CLIENT_SECRET!
 );
+import { NATIVE_MINT } from '@solana/spl-token';
+// import { createResponse, ServiceResponse } from './call.service';
 
-const SOL_TOKEN_ADDRESS = 'So11111111111111111111111111111111111111112';
+const SOL_TOKEN_ADDRESS = NATIVE_MINT.toString(); //'So11111111111111111111111111111111111111112';
 const DEFAULT_CHAIN = 'devnet';
 
 type ServiceResponse = {

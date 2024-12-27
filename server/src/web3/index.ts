@@ -14,6 +14,8 @@ import bs58 from 'bs58';
 // import { Wallet } from '@project-serum/anchor';
 import axios from 'axios';
 import Moralis from 'moralis';
+import { connection } from '../utils';
+import { getAccount, NATIVE_MINT } from '@solana/spl-token';
 
 enum Network {
   DEV,
@@ -125,15 +127,6 @@ const swapToken = async (
   lamportMultiplier: number,
   slippageBps = 50
 ): Promise<{ status: Status; error?: string; data: { txHash?: string } }> => {
-  console.log(
-    'SWAP FUNCTION CALLED WITH :',
-    network,
-    fromSecretKey,
-    amount,
-    fromTokenAddr,
-    toTokenAddr,
-    lamportMultiplier
-  );
   try {
     if (network != Network.DEV && network != Network.MAIN) {
       return createResponse(Status.Failure, {}, 'Network is not defined');
@@ -143,6 +136,15 @@ const swapToken = async (
     const connection = getConnection(network);
 
     const lamportAmount = Number(amount) * lamportMultiplier;
+
+    const tokenBalance = await getTokenBalance(
+      wallet.publicKey,
+      new PublicKey(fromTokenAddr)
+    );
+
+    if (Number(tokenBalance) < Number(amount)) {
+      return createResponse(Status.Failure, {}, 'Insufficient token balance.');
+    }
 
     const quoteResponse = await axios.get('https://quote-api.jup.ag/v6/quote', {
       params: {
@@ -262,6 +264,48 @@ const getWalletPorfolio = async (
       {},
       'Failed to fetch wallet portfolio.'
     );
+  }
+};
+
+const getTokenBalance = async (
+  userPublicKey: PublicKey,
+  tokenAddress: PublicKey
+) => {
+  try {
+    if (tokenAddress === NATIVE_MINT) {
+      const balance = await connection.getBalance(userPublicKey);
+      return balance;
+    }
+
+    const tokenAccounts = await connection.getTokenAccountsByOwner(
+      userPublicKey,
+      {
+        mint: new PublicKey(tokenAddress),
+      }
+    );
+
+    if (tokenAccounts.value.length === 0) {
+      createResponse(
+        Status.Failure,
+        {},
+        'No token account found for this user.'
+      );
+      return;
+    }
+
+    // const mintInfo = await getMint(connection, new PublicKey(tokenAddress));
+    const balance = await getAccount(connection, tokenAccounts.value[0].pubkey);
+
+    // const amountUnit =
+    //   Number(balance.amount.toString()) / 10 ** mintInfo.decimals;
+    return balance.amount;
+  } catch (error) {
+    createResponse(
+      Status.Failure,
+      {},
+      'Something went wrong while getting token information'
+    );
+    return;
   }
 };
 
