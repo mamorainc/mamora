@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
   await Moralis.start({
     apiKey: process.env.MORALIS_API_KEY,
   });
-  console.log('Moralis initialized');
+  // console.log('Moralis initialized');
 })();
 
 // initializeMoralis();

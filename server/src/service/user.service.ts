@@ -5,12 +5,14 @@ import { Request } from 'express';
 import prisma from '../db';
 import Moralis from 'moralis';
 import { OAuth2Client } from 'google-auth-library';
+import jwt from 'jsonwebtoken';
 
 const googleClient = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID!,
   process.env.GOOGLE_CLIENT_SECRET!
 );
 import { NATIVE_MINT } from '@solana/spl-token';
+import { sendVerificationEmail } from '../mail';
 // import { createResponse, ServiceResponse } from './call.service';
 
 const SOL_TOKEN_ADDRESS = NATIVE_MINT.toString(); //'So11111111111111111111111111111111111111112';
@@ -64,7 +66,10 @@ const signUpService = async (req: Request): Promise<ServiceResponse> => {
     },
   });
 
-  return createResponse(201, 'User created successfully', { user });
+  const token = generateToken({ id: user.id, email: user.email });
+  await sendVerificationEmail(email, username, user.id);
+
+  return createResponse(201, 'User created successfully', { token, user });
 };
 
 const signInService = async (req: Request): Promise<ServiceResponse> => {
@@ -90,7 +95,7 @@ const signInService = async (req: Request): Promise<ServiceResponse> => {
       user: userWithoutPassword,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return createResponse(404, 'Error: User not found');
   }
 };
@@ -312,10 +317,60 @@ const getWalletData = async (
   }
 };
 
+const verifyEmail = async (req: Request) : Promise<ServiceResponse> => {
+  const { token } = req.query;
+
+  if (!token) {
+    return createResponse(400, 'Verification token is required');
+  }
+
+  if (!process.env.JWT_SECRET) {
+    return createResponse(400, 'JWT_SECRET is not set in the environment variables.');
+    // throw new Error('JWT_SECRET is not set in the environment variables.');
+  }
+
+  try {
+    // Verify the token
+    const decoded = jwt.verify(token as string, process.env.JWT_SECRET) as {
+      userId: string;
+      purpose: string;
+    };
+
+    if (decoded.purpose !== 'email_verification') {
+      return createResponse(400, 'Invalid verification token');
+    }
+
+    const { userId } = decoded;
+
+    // Check if the user exists and is already verified
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return createResponse(404, 'User not found');
+    }
+
+    if (user.is_verified) {
+      return createResponse(200, 'User is already verified');
+    }
+
+    // Update the user's `is_verified` status
+    await prisma.user.update({
+      where: { id: userId },
+      data: { is_verified: true },
+    });
+
+    return createResponse(200, 'Email verified successfully');
+  } catch (error) {
+    console.error('Error verifying email:', (error as Error).message);
+    return createResponse(400, 'Invalid or expired token');
+  }
+};
+
 export {
   getUserDetails,
   signInService,
   signUpService,
   getWalletData,
   signInWithGoogleService,
+  verifyEmail,
 };

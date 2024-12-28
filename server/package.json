@@ -39,7 +39,10 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
-    "prisma": "^6.1.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/nodemailer": "^6.4.17",
+    "nodemailer": "^6.9.16",
+    "prisma": "^6.1.0"
   }
 }

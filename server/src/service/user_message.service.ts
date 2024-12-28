@@ -94,7 +94,7 @@ const openai = new OpenAI({
 async function parseUserMessage(userMessage: string, lastFiveMessages: any[]) {
   const formattedLastFiveMessages: any[] = [];
   lastFiveMessages.map((message: any) => {
-    console.log(message);
+    // console.log(message);
     if (message['content']) {
       formattedLastFiveMessages.push({
         role: 'user',
@@ -112,7 +112,7 @@ async function parseUserMessage(userMessage: string, lastFiveMessages: any[]) {
       }
     }
   });
-  console.log('formattedLISt was ', formattedLastFiveMessages);
+  // console.log('formattedLISt was ', formattedLastFiveMessages);
   const finalMessages = [
     {
       role: 'system',
@@ -139,7 +139,7 @@ async function parseUserMessage(userMessage: string, lastFiveMessages: any[]) {
       content: userMessage,
     },
   ];
-  console.log('final messages going to chat bot ', finalMessages);
+  // console.log('final messages going to chat bot ', finalMessages);
   const response = await openai.chat.completions.create({
     model: process.env.MODEL_NAME!,
     temperature: 0,
@@ -201,7 +201,7 @@ async function handleSolanaResponse(
         if (!user || !user.private_key) {
           return `Error: Could not find a wallet for user=${user.id}.`;
         }
-        console.log(netEnum, user.private_key, toPublicKey, amount);
+        // console.log(netEnum, user.private_key, toPublicKey, amount);
         const actionResult = await sendSol(
           netEnum,
           user.private_key,
@@ -282,24 +282,24 @@ async function processUserMessage(
       },
       take: 3,
     });
-    console.log('last 3 messages found were ', lastFiveMessages);
-    console.log('USER MESSAGE CONTENT: ', userMessageContent);
+    // console.log('last 3 messages found were ', lastFiveMessages);
+    // console.log('USER MESSAGE CONTENT: ', userMessageContent);
     const completionData = await parseUserMessage(
       userMessageContent,
       lastFiveMessages
     );
-    console.log('CHAT GPT RESPONSE: ', completionData.choices?.[0]?.message);
+    // console.log('CHAT GPT RESPONSE: ', completionData.choices?.[0]?.message);
     const result = await handleSolanaResponse(completionData, user);
 
     let contentToStore: string;
 
     if (typeof result === 'string') {
-      console.log('the result was string');
-      console.log(result);
+      // console.log('the result was string');
+      // console.log(result);
       contentToStore = JSON.stringify({ type: 'message', data: result });
     } else {
-      console.log('the result was NOT a String');
-      console.log(result);
+      // console.log('the result was NOT a String');
+      // console.log(result);
       contentToStore = JSON.stringify(result);
     }
 
@@ -311,7 +311,7 @@ async function processUserMessage(
       },
     });
 
-    console.log('Bot reply completed successfully');
+    // console.log('Bot reply completed successfully');
   } catch (error) {
     console.error('Error streaming bot reply:', error);
     await prisma.botReply.update({

@@ -12,8 +12,9 @@ export const callService = async (
   res: Response
 ): Promise<void> => {
   try {
-    const result = await method(req);
 
+
+    const result = await method(req);
     const token = result?.data?.token;
 
     if (token) {
