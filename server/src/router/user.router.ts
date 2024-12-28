@@ -6,6 +6,7 @@ import {
   getWalletData,
   signInService,
   signUpService,
+  verifyEmail,
 } from '../service/user.service';
 
 const userRouter = Router();
@@ -24,6 +25,10 @@ userRouter.post('/signin', async (req, res) => {
   await callService(signInService, req, res);
 });
 
+userRouter.post('/verify-email', async (req, res) => {
+  await callService(verifyEmail, req, res);
+})
+
 userRouter.post('/logout', async (req, res) => {
   res.clearCookie('authorization');
   res.status(200).json({
@@ -40,5 +45,7 @@ userRouter.get('/me', authMiddleware, async (req, res) => {
 userRouter.get('/wallet', authMiddleware, async (req, res) => {
   await callService(getWalletData, req, res);
 });
+
+
 
 export default userRouter;

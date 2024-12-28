@@ -8,12 +8,12 @@ const getAllMessagesByChatId = async function (req: Request, res: Response) {
     const userId = req.userId;
     const chatId = req.params['chatId'];
     if (!userId) {
-      console.log('user not found');
+      // console.log('user not found');
       res.status(400).json({ error: 'user not found' });
       return;
     }
     if (!chatId) {
-      console.log('chat not given in param');
+      // console.log('chat not given in param');
       res.status(400).json({ error: 'chat not found' });
       return;
     }
@@ -31,7 +31,7 @@ const getAllMessagesByChatId = async function (req: Request, res: Response) {
 
     res.status(200).json(allMessages);
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     res.status(500).json({ error: 'something went wrong' });
   }
 };
@@ -39,7 +39,7 @@ const getAllChatsForUser = async function (req: Request, res: Response) {
   try {
     const userId = req.userId;
     if (!userId) {
-      console.log('user not found');
+      // console.log('user not found');
       res.status(400).json({ error: 'user not found' });
       return;
     }
@@ -58,7 +58,7 @@ const getAllChatsForUser = async function (req: Request, res: Response) {
     });
     res.status(200).json(allChats);
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     res.status(500).json({ error: 'something went wrong' });
   }
 };
@@ -88,7 +88,7 @@ const createNewChat = async function (req: Request, res: Response) {
 
     res.status(201).json({ chatId: newChatId.id });
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     res.status(500).json({ error: 'something went wrong' });
   }
 };

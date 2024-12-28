@@ -15,15 +15,15 @@ async function processBotReply(
     let agent;
     const oldAgent = mapOFAGENTS.get(userId);
     if (!oldAgent) {
-      console.log('oldagent not found starting new agent');
+      // console.log('oldagent not found starting new agent');
       agent = await initializeAgentForUser(userId);
-      console.log('new agent started');
+      // console.log('new agent started');
     } else {
-      console.log('reusing old agent');
+      // console.log('reusing old agent');
       agent = oldAgent;
     }
     if (!agent) {
-      console.log('undefiend or null agent');
+      // console.log('undefiend or null agent');
       return;
     }
 
@@ -58,7 +58,7 @@ async function processBotReply(
       where: { id: botReplyId },
       data: { status: 'SENT' },
     });
-    console.log('Bot reply completed successfully');
+    // console.log('Bot reply completed successfully');
   } catch (error) {
     console.error('Error streaming bot reply:', error);
     await prisma.botReply.update({
