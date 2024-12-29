@@ -294,11 +294,11 @@ const getTokenBalance = async (
     }
 
     // const mintInfo = await getMint(connection, new PublicKey(tokenAddress));
-    const balance = await getAccount(connection, tokenAccounts.value[0].pubkey);
+    const balance = await connection.getTokenAccountBalance(tokenAccounts.value[0].pubkey);
 
     // const amountUnit =
     //   Number(balance.amount.toString()) / 10 ** mintInfo.decimals;
-    return balance.amount;
+    return balance.value.amount ;
   } catch (error) {
     createResponse(
       Status.Failure,
