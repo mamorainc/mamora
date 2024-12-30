@@ -184,7 +184,7 @@ async function handleSolanaResponse(
       return `Error: Failed to parse function arguments: ${String(err)}`;
     }
 
-    const netEnum = Network.DEV;
+    const netEnum = Network.MAIN;
     switch (functionName) {
       case 'getUserPublicKey':
         return user.public_key;
