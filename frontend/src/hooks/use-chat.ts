@@ -36,7 +36,7 @@ export const useGetMessagesByChatId = (id?: string) => {
                 ...item,
                 bot_reply: {
                     ...item.bot_reply,
-                    content: JSON.parse(item.bot_reply.content),
+                    content: item.bot_reply.content === "" ? { type: "message", data: "" } : JSON.parse(item.bot_reply.content),
                 },
             }));
         },

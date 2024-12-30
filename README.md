@@ -35,10 +35,10 @@ To set up and run Mamora, ensure you have the following:
 
 ## Available Tasks 🔄💸🛠️
 
-- **send\_transaction**: Send SOL or tokens to a specific address.
-- **monitor\_account**: Monitor on-chain accounts for changes.
-- **execute\_program**: Interact with Solana smart contracts.
-- **fetch\_data**: Retrieve data from on-chain or off-chain sources.
+- **send_transaction**: Send SOL or tokens to a specific address.
+- **monitor_account**: Monitor on-chain accounts for changes.
+- **execute_program**: Interact with Solana smart contracts.
+- **fetch_data**: Retrieve data from on-chain or off-chain sources.
 
 ---
 
