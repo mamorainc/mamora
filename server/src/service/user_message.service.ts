@@ -120,7 +120,7 @@ async function parseUserMessage(userMessage: string, lastFiveMessages: any[]) {
       - Only respond to the user's most recent request.
       - Use older messages for relevant context, but do not repeat or re-handle older requests.
       - If the user wants there own public key or wallet address call "getUserPublicKey"
-      - If the user wants to check their SOL balance, call "getBalance"
+      - If the user wants to check their SOL balance, call "getUserBalance"
       - If the user wants a public balance by passing a public key call "getBalanceByPublicKey"
       - If they want to send SOL, call "sendSol".
       - If they want to swap tokens, call "swapToken".
