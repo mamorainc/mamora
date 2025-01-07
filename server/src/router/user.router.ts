@@ -5,6 +5,7 @@ import {
   getUserDetails,
   getWalletData,
   signInService,
+  signInWithGoogleService,
   signUpService,
 } from '../service/user.service';
 
@@ -22,6 +23,10 @@ userRouter.post('/signup', async (req, res) => {
 
 userRouter.post('/signin', async (req, res) => {
   await callService(signInService, req, res);
+});
+
+userRouter.post('/google-signin', async (req, res) => {
+  await callService(signInWithGoogleService, req, res);
 });
 
 userRouter.get('/me', authMiddleware, async (req, res) => {

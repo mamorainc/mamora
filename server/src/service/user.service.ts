@@ -4,6 +4,12 @@ import bs58 from 'bs58';
 import { Request } from 'express';
 import prisma from '../db';
 import Moralis from 'moralis';
+import { OAuth2Client } from 'google-auth-library';
+
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID!,
+  process.env.GOOGLE_CLIENT_SECRET!
+);
 
 const SOL_TOKEN_ADDRESS = 'So11111111111111111111111111111111111111112';
 const DEFAULT_CHAIN = 'devnet';
@@ -68,6 +74,11 @@ const signInService = async (req: Request): Promise<ServiceResponse> => {
     if (!user) {
       return createResponse(404, 'Error: User not found');
     }
+
+    if (!user.password || user.password === '') {
+      return createResponse(401, 'Error: Use Google login or set a password');
+    }
+
     const isValidPassword = await compare(password, user.password);
     if (!isValidPassword) {
       return createResponse(401, 'Error: Invalid password');
@@ -76,6 +87,82 @@ const signInService = async (req: Request): Promise<ServiceResponse> => {
     return createResponse(200, 'User found successfully', {
       user: userWithoutPassword,
     });
+  } catch (error) {
+    console.log(error);
+    return createResponse(404, 'Error: User not found');
+  }
+};
+
+const signInWithGoogleService = async (
+  req: Request
+): Promise<ServiceResponse> => {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) {
+      return createResponse(400, 'Missing idToken');
+    }
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID!,
+    });
+    const payload = ticket.getPayload();
+    if (!payload?.email) {
+      return createResponse(400, 'No email found in idToken');
+    }
+    const email = payload.email as string;
+    console.log('Google email:', email);
+    const user = await prisma.user.findFirst({
+      where: { email },
+    });
+
+    if (!user) {
+      console.log('User not found:');
+      const newKeyPair = Keypair.generate();
+      const publicKey = new PublicKey(newKeyPair.publicKey);
+      const privateKey = bs58.encode(newKeyPair.secretKey);
+      const newUser = await prisma.user.create({
+        data: {
+          username: email,
+          email,
+          password: '',
+          is_verified: true,
+          private_key: privateKey,
+          public_key: publicKey.toString(),
+        },
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          is_verified: true,
+          public_key: true,
+          created_at: true,
+          updated_at: true,
+        },
+      });
+      return createResponse(200, 'User created successfully', {
+        user: newUser,
+      });
+    } else {
+      console.log('User found:', user);
+      const updatedUser = await prisma.user.update({
+        where: { email },
+        data: {
+          is_verified: true,
+        },
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          is_verified: true,
+          public_key: true,
+          created_at: true,
+          updated_at: true,
+        },
+      });
+      return createResponse(200, 'User found successfully', {
+        user: updatedUser,
+      });
+    }
   } catch (error) {
     console.log(error);
     return createResponse(404, 'Error: User not found');
@@ -223,4 +310,10 @@ const getWalletData = async (
   }
 };
 
-export { getUserDetails, signInService, signUpService, getWalletData };
+export {
+  getUserDetails,
+  signInService,
+  signUpService,
+  getWalletData,
+  signInWithGoogleService,
+};
