@@ -32,7 +32,6 @@
     "jsonwebtoken": "^9.0.2",
     "moralis": "^2.27.2",
     "openai": "^4.77.0",
-    "solana-agent-kit": "^1.2.0",
     "tsx": "^4.19.2",
     "zod": "^3.24.1"
   },
@@ -40,6 +39,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.7",
-    "prisma": "^6.1.0"
+    "prisma": "^6.1.0",
+    "typescript": "^5"
   }
 }

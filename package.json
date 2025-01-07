@@ -4,9 +4,6 @@
   "description": "",
   "private": true,
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "prepare": "cd server && npx prisma generate",
-    "postinstall": "cd server && npx prisma migrate dev --name init",
     "dev": "concurrently --kill-others-on-fail --names \"SERVER,FRONTEND\" --prefix \"[{name}]\" --prefix-colors \"blue.bold,green.bold\" \"cd server && pnpm dev\" \"cd frontend && pnpm dev\"",
     "build": "concurrently --names \"SERVER,FRONTEND\" --prefix \"[{name}]\" --prefix-colors \"blue.bold,green.bold\" \"cd server && pnpm build\" \"cd frontend && pnpm build\"",
     "start:prod": "concurrently --kill-others-on-fail --names \"SERVER,FRONTEND\" --prefix \"[{name}]\" --prefix-colors \"blue.bold,green.bold\" \"cd server && pnpm start\" \"cd frontend && pnpm start\"",

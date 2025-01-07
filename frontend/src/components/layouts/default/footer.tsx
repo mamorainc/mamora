@@ -13,7 +13,7 @@ export const Footer = () => {
             <Logo />
           </div>
 
-          <div className="flex gap-4 justify-start md:justify-end items-center col-span-full md:col-span-1">
+          <div className="col-span-full flex items-center justify-start gap-4 md:col-span-1 md:justify-end">
             <Link
               href={"https://github.com/mamorainc/mamora"}
               target="_blank"
@@ -22,7 +22,7 @@ export const Footer = () => {
               <GithubIcon />
             </Link>
             <Link
-              href={"https://x.com/mamora_in"}
+              href={"https://x.com/mamora_chat"}
               target="_blank"
               className="transition-all hover:opacity-80"
             >
@@ -43,7 +43,7 @@ export const Footer = () => {
 
             <div>
               <Link
-                href="https://x.com/mamora_in"
+                href="https://x.com/mamora_chat"
                 className="opacity-60 hover:opacity-100"
               >
                 Twitter
