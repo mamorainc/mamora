@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 
 import { LoginSchema } from '@/schemas';
 import { api } from '@/lib/axios';
@@ -7,6 +8,7 @@ import authConfig from '@/auth.config';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  secret: process.env.AUTH_SECRET!,
   session: {
     strategy: 'jwt',
   },
@@ -14,6 +16,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: '/login',
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.AUTH_GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_CLIENT_SECRET!,
+      profile: async (profile, tokens) => {
+        try {
+          const response = await api.post('/api/v1/user/google-signin', {
+            idToken: tokens.id_token,
+          });
+          if (response.status != 200) {
+            console.log('Google signin failed');
+            return undefined;
+          }
+          const user = response.data.data.user;
+          console.log('Google signin success');
+          return { ...user };
+        } catch (err) {
+          console.error(err);
+          return undefined;
+        }
+      },
+    }),
     Credentials({
       credentials: {
         email: {},
