@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,22 +8,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useLogout } from "@/hooks/use-authentication";
-import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
-import { useAuth } from "@/stores/use-auth";
-import { User } from "lucide-react";
+} from '@/components/ui/dropdown-menu';
+
+import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
+import { useAuth } from '@/stores/use-auth';
+import { User } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 export function ProfileDropdown() {
-  const { mutate: logout, isPending } = useLogout();
   const { copyToClipboard } = useCopyToClipboard();
-
   const authStore = useAuth();
   const user = useAuth((state) => state.user);
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size={"icon"}>
+        <Button variant="outline" size={'icon'}>
           <User size={25} />
         </Button>
       </DropdownMenuTrigger>
@@ -42,7 +41,7 @@ export function ProfileDropdown() {
             Profile
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => copyToClipboard(user?.public_key || "ERROR")}
+            onClick={() => copyToClipboard(user?.public_key || 'ERROR')}
           >
             Copy Wallet Address
           </DropdownMenuItem>
@@ -50,8 +49,7 @@ export function ProfileDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="focus:bg-destructive focus:text-destructive-foreground"
-          onClick={() => logout()}
-          disabled={isPending}
+          onClick={() => signOut()}
         >
           Log out
         </DropdownMenuItem>

@@ -1,7 +1,7 @@
-"use client";
-import { HTMLAttributes } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client';
+import { HTMLAttributes } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -9,45 +9,48 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { PasswordInput } from "@/components/ui/password-input";
-import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { LogInFormSchema, logInformSchema } from "./schema";
-import { useLogin } from "@/hooks/use-authentication";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { PasswordInput } from '@/components/ui/password-input';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { LogInFormSchema, logInformSchema } from './schema';
+import { signIn } from 'next-auth/react';
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
 export function LoginForm({ className, ...props }: UserAuthFormProps) {
   const { toast } = useToast();
   const router = useRouter();
-  const { mutate: login } = useLogin({
-    onSuccess() {
-      form.reset();
-      router.replace(`/dashboard`);
-    },
-  });
   const form = useForm<LogInFormSchema>({
     resolver: zodResolver(logInformSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
-  function onSubmit(data: LogInFormSchema) {
-    login(data);
-    toast({
-      title: "Log In Completed!",
+  async function onSubmit(data: LogInFormSchema) {
+    const result = await signIn('credentials', {
+      ...data,
+      redirect: false,
     });
-    // router.replace("/dashboard");
+    if (result?.ok) {
+      console.log('sign in success');
+      const callbackUrl = '/dashboard';
+      router.push(callbackUrl);
+    } else if (result?.error) {
+      console.error(result.error);
+      toast({ title: 'Invalid email or password' });
+    } else {
+      toast({ title: 'Something went wrong' });
+    }
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
+    <div className={cn('grid gap-6', className)} {...props}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-4">
