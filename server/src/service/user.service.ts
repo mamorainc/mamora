@@ -4,6 +4,7 @@ import bs58 from 'bs58';
 import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import prisma from '../db';
+import { sendVerificationEmail } from './email.service';
 // import { createResponse, ServiceResponse } from './call.service';
 
 type ServiceResponse = {
@@ -50,6 +51,7 @@ const signUpService = async (req: Request): Promise<ServiceResponse> => {
       password: hashedPassword,
       private_key: privateKey,
       public_key: publicKey.toString(),
+      is_verified: false,
     },
     select: {
       id: true,
@@ -62,9 +64,23 @@ const signUpService = async (req: Request): Promise<ServiceResponse> => {
     },
   });
 
+  // Send verification email
+  const emailSent = await sendVerificationEmail(email, username, user.id);
+  if (!emailSent) {
+    return createResponse(500, 'Failed to send verification email');
+  }
+
   const token = generateToken({ id: user.id, email: user.email });
 
-  return createResponse(201, 'User created successfully', { token, user });
+  return createResponse(
+    201,
+    'User created successfully. Please verify your email.',
+    {
+      token,
+      user,
+      requiresVerification: true,
+    }
+  );
 };
 
 const signInService = async (req: Request): Promise<ServiceResponse> => {

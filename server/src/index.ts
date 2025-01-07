@@ -6,6 +6,7 @@ import { authMiddleware } from './middleware';
 import actionRouter from './router/action.router';
 import chatRouter from './router/chat.router';
 import userRouter from './router/user.router';
+import { authRouter } from './router/auth.router';
 
 configDotenv();
 
@@ -16,7 +17,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL,
   })
 );
 
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
   });
 });
 
+app.use('/auth', authRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/action', actionRouter);
 app.use('/api/v1/chat', authMiddleware, chatRouter);
