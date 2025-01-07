@@ -18,6 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { LogInFormSchema, logInformSchema } from './schema';
 import { signIn } from 'next-auth/react';
+import { IconBrandGoogle } from '@tabler/icons-react';
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -50,7 +51,7 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
   }
 
   return (
-    <div className={cn('grid gap-6', className)} {...props}>
+    <div className={cn('grid gap-2', className)} {...props}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-4">
@@ -106,6 +107,12 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
           </div>
         </form>
       </Form>
+      <button onClick={() => signIn('google')}>
+        <div className="flex h-10 items-center justify-center space-x-2 rounded-lg bg-white px-2 py-1 text-sm text-black">
+          <IconBrandGoogle />
+          <div> Sign In with Google</div>
+        </div>
+      </button>
     </div>
   );
 }
