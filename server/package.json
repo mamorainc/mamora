@@ -29,7 +29,6 @@
     "cross-fetch": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2",
     "moralis": "^2.27.2",
     "openai": "^4.77.0",
     "tsx": "^4.19.2",
@@ -38,7 +37,6 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
-    "@types/jsonwebtoken": "^9.0.7",
     "prisma": "^6.1.0",
     "typescript": "^5"
   }

@@ -2,10 +2,8 @@ import { Keypair, PublicKey } from '@solana/web3.js';
 import { compare, hash } from 'bcrypt';
 import bs58 from 'bs58';
 import { Request } from 'express';
-import jwt from 'jsonwebtoken';
 import prisma from '../db';
 import Moralis from 'moralis';
-// import { createResponse, ServiceResponse } from './call.service';
 
 const SOL_TOKEN_ADDRESS = 'So11111111111111111111111111111111111111112';
 const DEFAULT_CHAIN = 'devnet';
@@ -21,14 +19,6 @@ const createResponse = (
   message: string,
   data: any = []
 ): ServiceResponse => ({ status, message, data });
-
-const generateToken = (payload: object): string => {
-  const secretKey = process.env.JWT_SECRET;
-  if (!secretKey) {
-    throw new Error('Security token is required');
-  }
-  return jwt.sign(payload, secretKey);
-};
 
 const signUpService = async (req: Request): Promise<ServiceResponse> => {
   const { username, email, password } = req.body;
@@ -66,9 +56,7 @@ const signUpService = async (req: Request): Promise<ServiceResponse> => {
     },
   });
 
-  const token = generateToken({ id: user.id, email: user.email });
-
-  return createResponse(201, 'User created successfully', { token, user });
+  return createResponse(201, 'User created successfully', { user });
 };
 
 const signInService = async (req: Request): Promise<ServiceResponse> => {
@@ -84,14 +72,12 @@ const signInService = async (req: Request): Promise<ServiceResponse> => {
     if (!isValidPassword) {
       return createResponse(401, 'Error: Invalid password');
     }
-    const token = generateToken({ id: user.id, email: user.email });
     const { password: _, private_key, ...userWithoutPassword } = user;
-    return createResponse(200, 'User signed in successfully', {
-      token,
+    return createResponse(200, 'User found successfully', {
       user: userWithoutPassword,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return createResponse(404, 'Error: User not found');
   }
 };
@@ -209,12 +195,12 @@ const getWalletData = async (
     const address = wallet
       ? wallet
       : await (async () => {
-        const user = await prisma.user.findFirst({
-          where: { id: req.userId },
-        });
-        if (!user) throw new Error('User not found');
-        return user.public_key;
-      })();
+          const user = await prisma.user.findFirst({
+            where: { id: req.userId },
+          });
+          if (!user) throw new Error('User not found');
+          return user.public_key;
+        })();
 
     if (!PublicKey.isOnCurve(address)) {
       return createResponse(411, 'Error: Invalid public key format.');
@@ -233,10 +219,7 @@ const getWalletData = async (
     return createResponse(200, 'User Wallet Data', data);
   } catch (error: unknown) {
     // console.error('Error in getWalletData:', error.message || error);
-    return createResponse(
-      400,
-      'An error occurred while fetching wallet data.'
-    );
+    return createResponse(400, 'An error occurred while fetching wallet data.');
   }
 };
 
