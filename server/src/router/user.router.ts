@@ -5,6 +5,7 @@ import {
   getUserDetails,
   getWalletData,
   signInService,
+  signInWithGoogleService,
   signUpService,
 } from '../service/user.service';
 
@@ -24,13 +25,8 @@ userRouter.post('/signin', async (req, res) => {
   await callService(signInService, req, res);
 });
 
-userRouter.post('/logout', async (req, res) => {
-  res.clearCookie('authorization');
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully logged out',
-    data: [],
-  });
+userRouter.post('/google-signin', async (req, res) => {
+  await callService(signInWithGoogleService, req, res);
 });
 
 userRouter.get('/me', authMiddleware, async (req, res) => {

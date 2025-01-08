@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000/',
   })
 );
 
@@ -35,7 +35,6 @@ app.get('/', (req, res) => {
   console.log('Moralis initialized');
 })();
 
-
 // initializeMoralis();
 
 app.use('/api/v1/user', userRouter);
@@ -48,7 +47,6 @@ app.use((req, res) => {
     message: 'API route not found',
   });
 });
-
 
 app.listen(process.env.PORT || 9000, () => {
   console.log(`app listening on http://localhost:9000`);

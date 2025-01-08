@@ -1,7 +1,7 @@
-"use client";
-import { HTMLAttributes } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client';
+import { HTMLAttributes } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -9,15 +9,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { PasswordInput } from "@/components/ui/password-input";
-import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { SignUpFormData, signUpformSchema } from "./schema";
-import { useRegister } from "@/hooks/use-authentication";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { PasswordInput } from '@/components/ui/password-input';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { SignUpFormData, signUpformSchema } from './schema';
+import { useRegister } from '@/hooks/use-authentication';
+import { IconBrandGoogle } from '@tabler/icons-react';
+import { signIn } from 'next-auth/react';
 
 type SignUpFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -33,9 +35,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpformSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
   });
 
@@ -46,12 +48,12 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       password: data.password,
     });
     toast({
-      title: "Sign Up Completed!",
+      title: 'Sign Up Completed!',
     });
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
+    <div className={cn('grid gap-2', className)} {...props}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-2">
@@ -108,7 +110,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               )}
             />
             <Button className="mt-2" disabled={isPending}>
-              {isPending ? "Creating..." : "Create Account"}
+              {isPending ? 'Creating...' : 'Create Account'}
             </Button>
 
             {/* <div className="relative my-2">
@@ -133,6 +135,12 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           </div>
         </form>
       </Form>
+      <button onClick={() => signIn('google')}>
+        <div className="flex h-10 items-center justify-center space-x-2 rounded-lg bg-white px-2 py-1 text-sm text-black">
+          <IconBrandGoogle />
+          <div> Sign In with Google</div>
+        </div>
+      </button>
     </div>
   );
 }
