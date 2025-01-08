@@ -8,6 +8,7 @@ import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import { NATIVE_MINT } from '@solana/spl-token';
 import { sendVerificationEmail } from '../mail';
+import { encrypt } from '../web3';
 
 const googleClient = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID!,
@@ -51,6 +52,7 @@ const signUpService = async (req: Request): Promise<ServiceResponse> => {
   const newKeyPair = Keypair.generate();
   const publicKey = new PublicKey(newKeyPair.publicKey);
   const privateKey = bs58.encode(newKeyPair.secretKey);
+  const encodedsecretKey = encrypt(privateKey);
 
   const hashedPassword = await hash(password, 10);
 
@@ -59,7 +61,7 @@ const signUpService = async (req: Request): Promise<ServiceResponse> => {
       username,
       email,
       password: hashedPassword,
-      private_key: privateKey,
+      private_key: encodedsecretKey,
       public_key: publicKey.toString(),
     },
     select: {
@@ -130,17 +132,19 @@ const signInWithGoogleService = async (
     });
 
     if (!user) {
-      console.log('User not found:');
+      // console.log('User not found:');
       const newKeyPair = Keypair.generate();
       const publicKey = new PublicKey(newKeyPair.publicKey);
       const privateKey = bs58.encode(newKeyPair.secretKey);
+      const encodedsecretKey = encrypt(privateKey);
+
       const newUser = await prisma.user.create({
         data: {
           username: email,
           email,
           password: '',
           is_verified: true,
-          private_key: privateKey,
+          private_key: encodedsecretKey,
           public_key: publicKey.toString(),
         },
         select: {
@@ -157,7 +161,7 @@ const signInWithGoogleService = async (
         user: newUser,
       });
     } else {
-      console.log('User found:', user);
+      // console.log('User found:', user);
       const updatedUser = await prisma.user.update({
         where: { email },
         data: {

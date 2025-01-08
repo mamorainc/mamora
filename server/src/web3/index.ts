@@ -15,7 +15,9 @@ import bs58 from 'bs58';
 import axios from 'axios';
 import Moralis from 'moralis';
 import { connection } from '../utils';
-import { getAccount, NATIVE_MINT } from '@solana/spl-token';
+import { NATIVE_MINT } from '@solana/spl-token';
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+
 
 enum Network {
   DEV,
@@ -75,7 +77,10 @@ const sendSol = async (
       return createResponse(Status.Failure, {}, 'Network is not defined');
     }
 
-    const userKey = Keypair.fromSecretKey(bs58.decode(fromSecretKey));
+    const decryptSecretKey =  decrypt(fromSecretKey);
+
+    const userKey = Keypair.fromSecretKey(bs58.decode(decryptSecretKey));
+
     const connection = getConnection(network);
     const amountLamports = Number(amount) * LAMPORTS_PER_SOL;
 
@@ -131,8 +136,9 @@ const swapToken = async (
     if (network != Network.DEV && network != Network.MAIN) {
       return createResponse(Status.Failure, {}, 'Network is not defined');
     }
+    const decryptSecretKey =  decrypt(fromSecretKey);
 
-    const wallet = Keypair.fromSecretKey(bs58.decode(fromSecretKey));
+    const wallet = Keypair.fromSecretKey(bs58.decode(decryptSecretKey));
     const connection = getConnection(network);
 
     const lamportAmount = Number(amount) * lamportMultiplier;
@@ -309,4 +315,46 @@ const getTokenBalance = async (
   }
 };
 
-export { getBalance, sendSol, swapToken, getPrice, getWalletPorfolio };
+function encrypt(text: string): string {
+  const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY || '', 'hex');
+  if (ENCRYPTION_KEY.length !== 32) {
+    throw new Error('Invalid ENCRYPTION_KEY length. It must be 32 bytes.');
+  }
+
+  const iv = randomBytes(16);
+  if (!process.env.SECRET_ALGO) {
+    throw new Error('Invalid SECRET_ALGO ');
+  }
+  const cipher = createCipheriv(process.env.SECRET_ALGO, ENCRYPTION_KEY, iv);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return `${iv.toString('hex')}:${encrypted}`;
+}
+
+
+
+function decrypt(encryptedText: string): string {
+  const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY || '', 'hex');
+  if (ENCRYPTION_KEY.length !== 32) {
+    throw new Error('Invalid ENCRYPTION_KEY length. It must be 32 bytes.');
+  }
+
+  const [ivHex, encrypted] = encryptedText.split(':');
+  if (!ivHex || !encrypted) {
+    throw new Error('Invalid encrypted text format.');
+  }
+  const iv = Buffer.from(ivHex, 'hex');
+  if (!process.env.SECRET_ALGO) {
+    throw new Error('Invalid ENCRYPTION_KEY length. It must be 32 bytes.');
+  }
+  const decipher = createDecipheriv(
+    process.env.SECRET_ALGO,
+    ENCRYPTION_KEY,
+    iv
+  );
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+
+export { getBalance, sendSol, swapToken, getPrice, getWalletPorfolio,encrypt,decrypt };
