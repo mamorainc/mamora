@@ -6,14 +6,13 @@ import prisma from '../db';
 import Moralis from 'moralis';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
+import { NATIVE_MINT } from '@solana/spl-token';
+import { sendVerificationEmail } from '../mail';
 
 const googleClient = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID!,
   process.env.GOOGLE_CLIENT_SECRET!
 );
-import { NATIVE_MINT } from '@solana/spl-token';
-import { sendVerificationEmail } from '../mail';
-// import { createResponse, ServiceResponse } from './call.service';
 
 const SOL_TOKEN_ADDRESS = NATIVE_MINT.toString(); //'So11111111111111111111111111111111111111112';
 const DEFAULT_CHAIN = 'devnet';
@@ -29,6 +28,14 @@ const createResponse = (
   message: string,
   data: any = []
 ): ServiceResponse => ({ status, message, data });
+
+const generateToken = (payload: object): string => {
+  const secretKey = process.env.JWT_SECRET;
+  if (!secretKey) {
+    throw new Error('Security token is required');
+  }
+  return jwt.sign(payload, secretKey);
+};
 
 const signUpService = async (req: Request): Promise<ServiceResponse> => {
   const { username, email, password } = req.body;
@@ -317,7 +324,7 @@ const getWalletData = async (
   }
 };
 
-const verifyEmail = async (req: Request) : Promise<ServiceResponse> => {
+const verifyEmail = async (req: Request): Promise<ServiceResponse> => {
   const { token } = req.query;
 
   if (!token) {
@@ -325,7 +332,10 @@ const verifyEmail = async (req: Request) : Promise<ServiceResponse> => {
   }
 
   if (!process.env.JWT_SECRET) {
-    return createResponse(400, 'JWT_SECRET is not set in the environment variables.');
+    return createResponse(
+      400,
+      'JWT_SECRET is not set in the environment variables.'
+    );
     // throw new Error('JWT_SECRET is not set in the environment variables.');
   }
 

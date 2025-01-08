@@ -28,9 +28,11 @@ userRouter.post('/signin', async (req, res) => {
 
 userRouter.post('/google-signin', async (req, res) => {
   await callService(signInWithGoogleService, req, res);
+});
+
 userRouter.post('/verify-email', async (req, res) => {
   await callService(verifyEmail, req, res);
-})
+});
 
 userRouter.post('/logout', async (req, res) => {
   res.clearCookie('authorization');
@@ -48,7 +50,5 @@ userRouter.get('/me', authMiddleware, async (req, res) => {
 userRouter.get('/wallet', authMiddleware, async (req, res) => {
   await callService(getWalletData, req, res);
 });
-
-
 
 export default userRouter;
