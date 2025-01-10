@@ -26,7 +26,7 @@ export default function SignUp() {
       </div>
 
       <div className="lg:p-8">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-2 sm:w-[350px]">
+        <div className="mx-auto flex w-full flex-col justify-center gap-4 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-left">
             <h1 className="text-2xl font-semibold tracking-tight">
               {" "}
@@ -44,7 +44,7 @@ export default function SignUp() {
             </p>
           </div>
           <SignUpForm />
-          <p className="mt-4 px-8 text-center text-sm text-muted-foreground">
+          <p className="mt-4 text-left text-sm text-muted-foreground">
             By creating an account, you agree to our{" "}
             <a
               href="#"
