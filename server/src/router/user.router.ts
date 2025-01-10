@@ -34,14 +34,6 @@ userRouter.post('/verify-email', async (req, res) => {
   await callService(verifyEmail, req, res);
 });
 
-userRouter.post('/logout', async (req, res) => {
-  res.clearCookie('authorization');
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully logged out',
-    data: [],
-  });
-});
 
 userRouter.get('/me', authMiddleware, async (req, res) => {
   await callService(getUserDetails, req, res);
