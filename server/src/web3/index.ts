@@ -14,6 +14,10 @@ import bs58 from 'bs58';
 // import { Wallet } from '@project-serum/anchor';
 import axios from 'axios';
 import Moralis from 'moralis';
+import { connection } from '../utils';
+import { NATIVE_MINT } from '@solana/spl-token';
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+
 
 enum Network {
   DEV,
@@ -73,7 +77,10 @@ const sendSol = async (
       return createResponse(Status.Failure, {}, 'Network is not defined');
     }
 
-    const userKey = Keypair.fromSecretKey(bs58.decode(fromSecretKey));
+    const decryptSecretKey =  decrypt(fromSecretKey);
+
+    const userKey = Keypair.fromSecretKey(bs58.decode(decryptSecretKey));
+
     const connection = getConnection(network);
     const amountLamports = Number(amount) * LAMPORTS_PER_SOL;
 
@@ -125,24 +132,25 @@ const swapToken = async (
   lamportMultiplier: number,
   slippageBps = 50
 ): Promise<{ status: Status; error?: string; data: { txHash?: string } }> => {
-  console.log(
-    'SWAP FUNCTION CALLED WITH :',
-    network,
-    fromSecretKey,
-    amount,
-    fromTokenAddr,
-    toTokenAddr,
-    lamportMultiplier
-  );
   try {
     if (network != Network.DEV && network != Network.MAIN) {
       return createResponse(Status.Failure, {}, 'Network is not defined');
     }
+    const decryptSecretKey =  decrypt(fromSecretKey);
 
-    const wallet = Keypair.fromSecretKey(bs58.decode(fromSecretKey));
+    const wallet = Keypair.fromSecretKey(bs58.decode(decryptSecretKey));
     const connection = getConnection(network);
 
     const lamportAmount = Number(amount) * lamportMultiplier;
+
+    const tokenBalance = await getTokenBalance(
+      wallet.publicKey,
+      new PublicKey(fromTokenAddr)
+    );
+
+    if (Number(tokenBalance) < Number(amount)) {
+      return createResponse(Status.Failure, {}, 'Insufficient token balance.');
+    }
 
     const quoteResponse = await axios.get('https://quote-api.jup.ag/v6/quote', {
       params: {
@@ -195,7 +203,6 @@ const swapToken = async (
       },
       'confirmed'
     );
-
 
     return createResponse(Status.Success, { txHash: txid });
   } catch (error: unknown) {
@@ -266,4 +273,88 @@ const getWalletPorfolio = async (
   }
 };
 
-export { getBalance, sendSol, swapToken, getPrice, getWalletPorfolio };
+const getTokenBalance = async (
+  userPublicKey: PublicKey,
+  tokenAddress: PublicKey
+) => {
+  try {
+    if (tokenAddress === NATIVE_MINT) {
+      const balance = await connection.getBalance(userPublicKey);
+      return balance;
+    }
+
+    const tokenAccounts = await connection.getTokenAccountsByOwner(
+      userPublicKey,
+      {
+        mint: new PublicKey(tokenAddress),
+      }
+    );
+
+    if (tokenAccounts.value.length === 0) {
+      createResponse(
+        Status.Failure,
+        {},
+        'No token account found for this user.'
+      );
+      return;
+    }
+
+    // const mintInfo = await getMint(connection, new PublicKey(tokenAddress));
+    const balance = await connection.getTokenAccountBalance(tokenAccounts.value[0].pubkey);
+
+    // const amountUnit =
+    //   Number(balance.amount.toString()) / 10 ** mintInfo.decimals;
+    return balance.value.amount ;
+  } catch (error) {
+    createResponse(
+      Status.Failure,
+      {},
+      'Something went wrong while getting token information'
+    );
+    return;
+  }
+};
+
+function encrypt(text: string): string {
+  const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY || '', 'hex');
+  if (ENCRYPTION_KEY.length !== 32) {
+    throw new Error('Invalid ENCRYPTION_KEY length. It must be 32 bytes.');
+  }
+
+  const iv = randomBytes(16);
+  if (!process.env.SECRET_ALGO) {
+    throw new Error('Invalid SECRET_ALGO ');
+  }
+  const cipher = createCipheriv(process.env.SECRET_ALGO, ENCRYPTION_KEY, iv);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return `${iv.toString('hex')}:${encrypted}`;
+}
+
+
+
+function decrypt(encryptedText: string): string {
+  const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY || '', 'hex');
+  if (ENCRYPTION_KEY.length !== 32) {
+    throw new Error('Invalid ENCRYPTION_KEY length. It must be 32 bytes.');
+  }
+
+  const [ivHex, encrypted] = encryptedText.split(':');
+  if (!ivHex || !encrypted) {
+    throw new Error('Invalid encrypted text format.');
+  }
+  const iv = Buffer.from(ivHex, 'hex');
+  if (!process.env.SECRET_ALGO) {
+    throw new Error('Invalid ENCRYPTION_KEY length. It must be 32 bytes.');
+  }
+  const decipher = createDecipheriv(
+    process.env.SECRET_ALGO,
+    ENCRYPTION_KEY,
+    iv
+  );
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+
+export { getBalance, sendSol, swapToken, getPrice, getWalletPorfolio,encrypt,decrypt };

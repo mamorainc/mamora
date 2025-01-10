@@ -7,6 +7,7 @@ import {
   signInService,
   signInWithGoogleService,
   signUpService,
+  verifyEmail,
 } from '../service/user.service';
 
 const userRouter = Router();
@@ -28,6 +29,11 @@ userRouter.post('/signin', async (req, res) => {
 userRouter.post('/google-signin', async (req, res) => {
   await callService(signInWithGoogleService, req, res);
 });
+
+userRouter.post('/verify-email', async (req, res) => {
+  await callService(verifyEmail, req, res);
+});
+
 
 userRouter.get('/me', authMiddleware, async (req, res) => {
   await callService(getUserDetails, req, res);
