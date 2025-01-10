@@ -118,10 +118,10 @@ export const Footer = () => {
         <Separator className="my-6" />
         <section className="">
           <h3>
-            &copy; 2024 Developed at
+            &copy; 2025 Developed at
             <Link
               target="_blank"
-              href="https://maps.google.co.in/maps"
+              href="#"
               className="ml-1 border-primary text-primary transition-all hover:border-b-2"
             >
               SuperLabs

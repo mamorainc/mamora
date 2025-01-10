@@ -1,15 +1,15 @@
-import GithubIcon from "@/components/icons/github";
-import LinkedInIcon from "@/components/icons/linkedin";
-import XIcon from "@/components/icons/x";
+import GithubIcon from '@/components/icons/github';
+import LinkedInIcon from '@/components/icons/linkedin';
+import XIcon from '@/components/icons/x';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardFooter,
-} from "@/components/ui/card";
-import Image from "next/image";
-import Link from "next/link";
+} from '@/components/ui/card';
+import Image from 'next/image';
+import Link from 'next/link';
 interface TeamProps {
   imageUrl: string;
   firstName: string;
@@ -24,93 +24,73 @@ interface SocialNetworkProps {
 export const Team = () => {
   const teamList: TeamProps[] = [
     {
-      imageUrl: "/assets/images/harsimranjit-dhaliwal.jpg",
-      firstName: "Harsimranjit",
-      lastName: "Dhaliwal",
-      positions: ["Software Engineer"],
+      imageUrl: '/assets/images/harsimranjit-dhaliwal.jpg',
+      firstName: 'Harsimranjit',
+      lastName: 'Dhaliwal',
+      positions: ['Software Engineer'],
       socialNetworks: [
         {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/harsimran-d/",
+          name: 'LinkedIn',
+          url: 'https://www.linkedin.com/in/harsimran-d/',
         },
         {
-          name: "Github",
-          url: "https://github.com/harsimran-d",
+          name: 'Github',
+          url: 'https://github.com/harsimran-d',
         },
         {
-          name: "X",
-          url: "https://x.com/harsimran_d",
+          name: 'X',
+          url: 'https://x.com/harsimran_d',
         },
       ],
     },
     {
-      imageUrl: "/assets/images/0xnas.jpg",
-      firstName: "0xnas",
-      lastName: "",
-      positions: ["Software Engineer"],
+      imageUrl: '/assets/images/0xnas.jpg',
+      firstName: '0xnas',
+      lastName: '',
+      positions: ['Software Engineer'],
       socialNetworks: [
         {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/anareshrao/",
+          name: 'LinkedIn',
+          url: 'https://www.linkedin.com/in/anareshrao/',
         },
         {
-          name: "Github",
-          url: "https://github.com/iamnas",
+          name: 'Github',
+          url: 'https://github.com/iamnas',
         },
         {
-          name: "X",
-          url: "https://x.com/0xnas_eth",
+          name: 'X',
+          url: 'https://x.com/0xnas_eth',
         },
       ],
     },
     {
-      imageUrl: "/assets/images/pratyusha-kumar-kar.jpg",
-      firstName: "Pratyusha",
-      lastName: "Kumar Kar",
-      positions: ["Software Engineer"],
+      imageUrl: '/assets/images/anurag-kochar.jpg',
+      firstName: 'Anurag',
+      lastName: 'Kochar',
+      positions: ['Software Engineer'],
       socialNetworks: [
         {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/kaishuro/",
+          name: 'LinkedIn',
+          url: 'https://www.linkedin.com/in/anurag-kochar-527696242/',
         },
         {
-          name: "Github",
-          url: "https://github.com/PratyushaKumarKar",
+          name: 'Github',
+          url: 'https://github.com/anurag-kochar-1',
         },
         {
-          name: "X",
-          url: "https://x.com/pratyushkai",
-        },
-      ],
-    },
-    {
-      imageUrl: "/assets/images/anurag-kochar.jpg",
-      firstName: "Anurag",
-      lastName: "Kochar",
-      positions: ["Software Engineer"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/anurag-kochar-527696242/",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/anurag-kochar-1",
-        },
-        {
-          name: "X",
-          url: "https://x.com/anurag__kochar",
+          name: 'X',
+          url: 'https://x.com/anurag__kochar',
         },
       ],
     },
   ];
   const socialIcon = (socialName: string) => {
     switch (socialName) {
-      case "LinkedIn":
+      case 'LinkedIn':
         return <LinkedInIcon />;
-      case "Github":
+      case 'Github':
         return <GithubIcon />;
-      case "X":
+      case 'X':
         return <XIcon />;
     }
   };
@@ -130,11 +110,11 @@ export const Team = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {teamList.map(
           (
             { imageUrl, firstName, lastName, positions, socialNetworks },
-            index,
+            index
           ) => (
             <Card
               key={index}
@@ -151,7 +131,7 @@ export const Team = () => {
                   />
                 </div>
                 <CardTitle className="px-6 py-6 pb-4">
-                  {firstName}{" "}
+                  {firstName}{' '}
                   {lastName && <span className="text-primary">{lastName}</span>}
                 </CardTitle>
               </CardHeader>
@@ -159,7 +139,7 @@ export const Team = () => {
                 <CardContent
                   key={index}
                   className={`pb-0 text-muted-foreground ${
-                    index === positions.length - 1 && "pb-6"
+                    index === positions.length - 1 && 'pb-6'
                   }`}
                 >
                   {position}
@@ -180,7 +160,7 @@ export const Team = () => {
                 ))}
               </CardFooter>
             </Card>
-          ),
+          )
         )}
       </div>
     </section>
