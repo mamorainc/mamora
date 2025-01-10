@@ -107,12 +107,10 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
           </div>
         </form>
       </Form>
-      <button onClick={() => signIn('google')}>
-        <div className="flex h-10 items-center justify-center space-x-2 rounded-lg bg-white px-2 py-1 text-sm text-black">
-          <IconBrandGoogle />
-          <div> Sign In with Google</div>
-        </div>
-      </button>
+      <Button variant={'secondary'} onClick={() => signIn('google')} className='flex items-center justify-center gap-2'>
+        <IconBrandGoogle />
+        <span> Sign In with Google</span>
+      </Button>
     </div>
   );
 }
