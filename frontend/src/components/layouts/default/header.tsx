@@ -1,5 +1,5 @@
 "use client";
-import { ChevronsDown, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useState } from "react";
 import {
   Sheet,
@@ -66,10 +66,7 @@ export const Navbar = () => {
             <div>
               <SheetHeader className="mb-4 ml-4">
                 <SheetTitle className="flex items-center">
-                  <Link href="/" className="flex items-center">
-                    <ChevronsDown className="mr-2 h-9 w-9 rounded-lg border border-secondary bg-gradient-to-tr from-primary via-primary/70 to-primary text-white" />
-                    Mamora
-                  </Link>
+                  <Logo />
                 </SheetTitle>
               </SheetHeader>
 

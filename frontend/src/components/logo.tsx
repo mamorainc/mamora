@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Box } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { memo } from "react";
 
@@ -19,17 +19,27 @@ export const Logo = memo(
     return (
       <Link
         href={href}
-        className={cn("flex items-center text-lg font-bold", classes?.root)}
+        className={cn(classes?.root)}
       >
-        <div
-          className={cn(
-            "mr-2 flex !aspect-square !size-9 items-center justify-center rounded-lg border border-secondary bg-gradient-to-tr from-primary via-primary/70 to-primary text-white",
-            classes?.logo,
-          )}
-        >
-          <Box className={cn("size-7", classes?.logoIcon)} />
-        </div>
-        {isSidebarOpen ? "Mamora" : null}
+        <Image
+          src={`/assets/images/mamora-logo.png`}
+          alt="Mamora Logo"
+          width={250}
+          height={250}
+          className={cn("size-9 lg:hidden", {
+            "lg:block size-7": !isSidebarOpen,
+          })}
+        />
+        <Image
+          src={`/assets/images/mamora-full-logo.png`}
+          alt="Mamora Full Logo"
+          width={250}
+          height={250}
+          className={cn("hidden lg:block max-w-[6.5rem]", {
+            "lg:hidden": !isSidebarOpen,
+          })}
+        />
+
       </Link>
     );
   },
