@@ -18,9 +18,16 @@ export interface AuthResponse {
 export interface User {
     created_at: string;
     email: string;
-    id: string; 
+    id: string;
     is_verified: boolean;
     public_key: string;
     updated_at: string;
     username: string;
+}
+
+
+export type UserData = {
+    status: number;
+    message: string;
+    data: { user: User }
 }

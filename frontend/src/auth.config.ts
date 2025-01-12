@@ -6,7 +6,9 @@ export interface CustomUser extends User {
 }
 
 export interface CustomSession extends Session {
-  user: CustomUser;
+  user: CustomUser & {
+    id: string;
+  };
 }
 
 interface CustomToken extends JWT {
@@ -18,11 +20,12 @@ export default {
   providers: [],
   callbacks: {
     async jwt({ token, user, account }) {
-      if (account?.provider == 'google') {
+      if (account?.provider === 'google') {
         token.sub = account.providerAccountId;
         token.role = 'USER';
         return token;
       }
+
       const customUser = user as CustomUser;
       if (user?.id) {
         token.sub = customUser.id;
@@ -33,11 +36,12 @@ export default {
     async session({ session, token }) {
       const customSession = session as CustomSession;
       const customToken = token as CustomToken;
-      if (token?.sub && token?.role) {
-        customSession.user = (customSession.user || {}) as CustomUser;
-        customSession.user.id = customToken.sub;
-        customSession.user.role = customToken.role;
-      }
+
+      customSession.user = customSession.user || {} as CustomUser;
+
+      customSession.user.id = customToken.sub!;
+      customSession.user.role = customToken.role;
+
       return customSession;
     },
   },

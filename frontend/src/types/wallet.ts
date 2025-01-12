@@ -1,12 +1,15 @@
+
+type Wallet = {
+  tokens: Token[];
+  nfts: NFT[];
+  nativeBalance: NativeBalance;
+  usdPrice: number;
+}
+
 export type WalletData = {
   status: number;
   message: string;
-  data: {
-    tokens: Token[];
-    nfts: NFT[];
-    nativeBalance: NativeBalance;
-    usdPrice: number;
-  };
+  data: Wallet;
 };
 
 export type Token = {
