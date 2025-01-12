@@ -1,15 +1,15 @@
-"use client";
+'use client';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Coins, DollarSign, Layers } from "lucide-react";
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { Coins, DollarSign, Layers } from 'lucide-react';
 
 export default function DashboardPage() {
   const {
@@ -17,7 +17,6 @@ export default function DashboardPage() {
     isLoading: isWalletDataLoading,
     error: walletDataError,
   } = useGetWalletData();
-  useGetWalletData();
 
   return (
     <div className="flex-1 space-y-4 overflow-y-auto p-4 pt-6 md:p-8">
@@ -35,8 +34,8 @@ export default function DashboardPage() {
             ))
         ) : walletDataError ? (
           <p className="text-sm font-medium text-destructive">
-            {" "}
-            {walletDataError?.message ?? "ERROR IN GETTING DASBHAORD DATA"}
+            {' '}
+            {walletDataError?.message ?? 'ERROR IN GETTING DASBHAORD DATA'}
           </p>
         ) : (
           <>
@@ -131,7 +130,7 @@ export default function DashboardPage() {
                 ) : walletDataError ? (
                   <p className="text-sm font-medium text-destructive">
                     {walletDataError?.message ??
-                      "ERROR IN GETTING DASBHAORD DATA"}
+                      'ERROR IN GETTING DASBHAORD DATA'}
                   </p>
                 ) : walletData?.data?.tokens?.length ? (
                   walletData?.data?.tokens.map((token) => (
@@ -184,7 +183,7 @@ export default function DashboardPage() {
                 ) : walletDataError ? (
                   <p className="text-sm font-medium text-destructive">
                     {walletDataError?.message ??
-                      "ERROR IN GETTING DASBHAORD DATA"}
+                      'ERROR IN GETTING DASBHAORD DATA'}
                   </p>
                 ) : walletData?.data?.nfts?.length ? (
                   walletData?.data?.nfts.map((nft) => (
@@ -220,24 +219,24 @@ export default function DashboardPage() {
   );
 }
 
-import { AreaChart, Area } from "recharts";
-import { useGetWalletData } from "@/hooks/use-wallet";
-import { StatsCard } from "@/components/dashboard/stats-card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { AreaChart, Area } from 'recharts';
+import { useGetWalletData } from '@/hooks/use-wallet';
+import { StatsCard } from '@/components/dashboard/stats-card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const data = [
-  { date: "Jan 1", balance: 5200 },
-  { date: "Jan 8", balance: 4800 },
-  { date: "Jan 15", balance: 6100 },
-  { date: "Jan 22", balance: 5900 },
-  { date: "Jan 29", balance: 7200 },
-  { date: "Feb 5", balance: 6800 },
-  { date: "Feb 12", balance: 8400 },
-  { date: "Feb 19", balance: 8900 },
-  { date: "Feb 26", balance: 8100 },
-  { date: "Mar 5", balance: 9600 },
-  { date: "Mar 12", balance: 9200 },
-  { date: "Mar 19", balance: 10400 },
+  { date: 'Jan 1', balance: 5200 },
+  { date: 'Jan 8', balance: 4800 },
+  { date: 'Jan 15', balance: 6100 },
+  { date: 'Jan 22', balance: 5900 },
+  { date: 'Jan 29', balance: 7200 },
+  { date: 'Feb 5', balance: 6800 },
+  { date: 'Feb 12', balance: 8400 },
+  { date: 'Feb 19', balance: 8900 },
+  { date: 'Feb 26', balance: 8100 },
+  { date: 'Mar 5', balance: 9600 },
+  { date: 'Mar 12', balance: 9200 },
+  { date: 'Mar 19', balance: 10400 },
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -275,9 +274,9 @@ function WalletBalanceChart() {
               ${currentBalance.toLocaleString()}
             </span>
             <span
-              className={`text-sm ${isPositive ? "text-green-500" : "text-red-500"}`}
+              className={`text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}
             >
-              {isPositive ? "+" : ""}
+              {isPositive ? '+' : ''}
               {percentageChange}%
             </span>
           </div>
@@ -308,19 +307,19 @@ function WalletBalanceChart() {
                 dataKey="date"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 12, fill: "#6B7280" }}
+                tick={{ fontSize: 12, fill: '#6B7280' }}
                 dy={10}
               />
               <YAxis
                 hide={true}
-                domain={["dataMin - 1000", "dataMax + 1000"]}
+                domain={['dataMin - 1000', 'dataMax + 1000']}
               />
               <Tooltip
                 content={<CustomTooltip />}
                 cursor={{
-                  stroke: "var(--primary)",
+                  stroke: 'var(--primary)',
                   strokeWidth: 1,
-                  strokeDasharray: "5 5",
+                  strokeDasharray: '5 5',
                 }}
               />
               <Area
@@ -333,8 +332,8 @@ function WalletBalanceChart() {
                 dot={false}
                 activeDot={{
                   r: 6,
-                  fill: "#3B82F6",
-                  stroke: "#fff",
+                  fill: '#3B82F6',
+                  stroke: '#fff',
                   strokeWidth: 2,
                 }}
               />

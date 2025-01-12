@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query"
 export const useGetWalletData = () => {
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
   const userWallet = useAuth((state) => state.user?.public_key);
+
+
   return useQuery({
     queryKey: ["wallet"],
     queryFn: async () => {

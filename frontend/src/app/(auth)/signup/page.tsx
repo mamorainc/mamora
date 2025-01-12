@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { SignUpForm } from "@/components/forms/sign-up";
 
-export default function SignUp() {
+export default function SignUpPage() {
   return (
     <div className="container relative mx-auto grid h-svh flex-col items-center justify-center px-4 lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">

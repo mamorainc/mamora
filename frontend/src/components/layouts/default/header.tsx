@@ -1,6 +1,6 @@
 "use client";
 import { ChevronsDown, Menu } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -38,9 +38,13 @@ const routeList: RouteProps[] = [
     label: "Github",
   },
 ];
+
+
+
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
+
   return (
     <header className="sticky top-5 z-40 mx-auto flex w-[90%] items-center justify-between rounded-2xl border border-secondary bg-card bg-opacity-15 p-2 shadow-inner md:w-[70%] lg:w-[75%] lg:max-w-screen-xl">
       <Logo />
