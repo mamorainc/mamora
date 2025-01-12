@@ -24,18 +24,18 @@ export const Logo = memo(
         <Image
           src={`/assets/images/mamora-logo.png`}
           alt="Mamora Logo"
-          width={250}
-          height={250}
-          className={cn("size-9 lg:hidden", {
+          width={350}
+          height={350}
+          className={cn("size-9 lg:hidden aspect-square", {
             "lg:block size-7": !isSidebarOpen,
           })}
         />
         <Image
           src={`/assets/images/mamora-full-logo.png`}
           alt="Mamora Full Logo"
-          width={250}
-          height={250}
-          className={cn("hidden lg:block max-w-[6.5rem]", {
+          width={350}
+          height={350}
+          className={cn("hidden lg:block max-w-[6.5rem] aspect-auto", {
             "lg:hidden": !isSidebarOpen,
           })}
         />
