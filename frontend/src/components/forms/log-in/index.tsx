@@ -39,7 +39,6 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
       redirect: false,
     });
     if (result?.ok) {
-      console.log('sign in success');
       const callbackUrl = '/dashboard';
       router.push(callbackUrl);
     } else if (result?.error) {
@@ -83,31 +82,13 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className="mt-2">Login</Button>
-
-            {/* <div className="relative my-2">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Button variant="outline" className="w-full" type="button">
-                GitHub
-              </Button>
-              <Button variant="outline" className="w-full" type="button">
-                Facebook
-              </Button>
-            </div> */}
+            <Button className="mt-2" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? "Logging in..." : "Log in"}
+            </Button>
           </div>
         </form>
       </Form>
-      <Button variant={'secondary'} onClick={() => signIn('google')} className='flex items-center justify-center gap-2'>
+      <Button variant={'secondary'} disabled={form.formState.isSubmitting} onClick={() => signIn('google')} className='flex items-center justify-center gap-2'>
         <IconBrandGoogle />
         <span> Sign In with Google</span>
       </Button>
