@@ -12,6 +12,8 @@ import { XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Coins, DollarSign, Layers } from 'lucide-react';
 
 export default function DashboardPage() {
+  const router = useRouter()
+  const { status } = useSession()
   const {
     data: walletData,
     isLoading: isWalletDataLoading,
@@ -24,9 +26,13 @@ export default function DashboardPage() {
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
       </div>
 
+      <Button onClick={() => router.refresh()}> Refresh </Button>
+
+
+
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        {isWalletDataLoading ? (
+        {isWalletDataLoading && status === 'loading' ? (
           Array(3)
             .fill(0)
             .map((_, i) => (
@@ -223,6 +229,9 @@ import { AreaChart, Area } from 'recharts';
 import { useGetWalletData } from '@/hooks/use-wallet';
 import { StatsCard } from '@/components/dashboard/stats-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 const data = [
   { date: 'Jan 1', balance: 5200 },

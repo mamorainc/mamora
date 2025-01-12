@@ -5,16 +5,20 @@ import type { Metadata } from "next";
 import { TanstackReactQueryProvider } from "@/providers/tanstack-react-query";
 import { AuthWrapper } from "@/components/auth-wrapper";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthSessionProvider } from "@/providers/session";
+import { Session } from "next-auth";
 
 export const metadata: Metadata = {
   title: "Mamora",
   description: "A chat bot to automate you Solana work flows",
 };
-  
+
 export default function RootLayout({
   children,
+  session
 }: Readonly<{
   children: React.ReactNode;
+  session: Session | null
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -25,13 +29,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TanstackReactQueryProvider>
-            <AuthWrapper>
-              <TooltipProvider>{children}</TooltipProvider>
-            </AuthWrapper>
-          </TanstackReactQueryProvider>
 
-          <Toaster />
+          <AuthSessionProvider session={session}>
+            <TanstackReactQueryProvider>
+              <AuthWrapper>
+                <TooltipProvider>{children}</TooltipProvider>
+                <Toaster />
+              </AuthWrapper>
+            </TanstackReactQueryProvider>
+          </AuthSessionProvider>
+
         </ThemeProvider>
       </body>
     </html>

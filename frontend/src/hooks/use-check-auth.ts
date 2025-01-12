@@ -1,36 +1,25 @@
 import { api } from "@/lib/axios";
-import logger from "@/lib/logger";
 import { useAuth } from "@/stores/use-auth";
-import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
 export function useCheckAuth() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { setAuth, setLoading, logout } = useAuth();
+  const { setAuth } = useAuth();
+  const { status } = useSession()
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        if (status !== 'authenticated') return null;
         const response = await api.get("/api/v1/user/me");
+        console.log(response)
         if (response.data?.data?.user) {
           setAuth(response.data.data.user);
-          if (pathname === "/") {
-            logger.info("Redirecting to dashboard");
-            router.replace("/dashboard");
-          }
-        } else {
-          logout();
-          router.replace("/");
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        logout();
-      } finally {
-        setLoading(false);
-      }
+      } catch (error) { }
     };
 
     checkAuth();
-  }, [setAuth, setLoading, logout]);
+  }, [status]);
 }

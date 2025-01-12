@@ -8,14 +8,16 @@ import { Header } from "@/components/layouts/internal/header";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Main } from "@/components/layouts/internal";
 import { ProfileDropdown } from "@/components/profile-dropdown";
+import { useSession } from "next-auth/react";
 
 export default function InternalLayout({ children }: { children: ReactNode }) {
   const defaultOpen = Cookies.get("sidebar:state") !== "false";
+  const { data: session, status } = useSession();
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
         <SidebarProvider defaultOpen={defaultOpen}>
-        <AppSidebar />
+          <AppSidebar />
           <div
             id="content"
             className={cn(
@@ -29,6 +31,10 @@ export default function InternalLayout({ children }: { children: ReactNode }) {
             <Header sticky>
               {/* <Search /> */}
               <div className="ml-auto flex items-center space-x-4">
+                {JSON.stringify(session)}
+                <br />
+                {JSON.stringify(status)}
+
                 <ThemeToggle className="hidden md:flex" />
                 <ProfileDropdown />
               </div>
