@@ -31,9 +31,11 @@ export default function InternalLayout({ children }: { children: ReactNode }) {
             <Header sticky>
               {/* <Search /> */}
               <div className="ml-auto flex items-center space-x-4">
-                {JSON.stringify(session)}
-                <br />
-                {JSON.stringify(status)}
+                <div className="hidden">
+                  {JSON.stringify(session)}
+                  <br />
+                  {JSON.stringify(status)}
+                </div>
 
                 <ThemeToggle className="hidden md:flex" />
                 <ProfileDropdown />

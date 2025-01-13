@@ -4,6 +4,7 @@ import logger from '@/lib/logger'
 import { redirect } from 'next/navigation'
 import { getUserData } from '@/services/user/get-user'
 import { getWalletData } from '@/services/wallet/get-wallet'
+import { DashboardContent } from './_components/dashboard-content'
 
 const DashboardPage = async () => {
   logger.info('DashboardPage called')
@@ -19,13 +20,9 @@ const DashboardPage = async () => {
     const walletData = await getWalletData(session?.user?.id, publicKey)
 
     return (
-      <div className="p-4">
-        <pre className="whitespace-pre-wrap">
-          {JSON.stringify(userData, null, 2)}
-          <br />
-          {JSON.stringify(walletData, null, 2)}
-        </pre>
-      </div>
+      <>
+        <DashboardContent walletData={walletData} />
+      </>
     )
   } catch (error) {
     return (

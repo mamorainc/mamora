@@ -15,7 +15,7 @@ export const getWalletData = async (userId?: string, userWallet?: string):Promis
           'x-user-id': userId,
           'Content-Type': 'application/json',
         },
-        cache: "no-cache"
+        cache: "no-store"
       },
     )
 

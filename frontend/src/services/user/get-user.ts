@@ -12,7 +12,7 @@ export const getUserData = async (userId?: string): Promise<UserData> => {
         'x-user-id': userId,
         'Content-Type': 'application/json',
       },
-      cache: "no-cache"
+      cache: "no-store"
     })
 
     if (!response.ok) {
