@@ -2,9 +2,9 @@ import React from 'react'
 import { auth } from '@/lib/auth'
 import logger from '@/lib/logger'
 import { redirect } from 'next/navigation'
-import { getUserData } from '@/services/user/get-user'
 import { getWalletData } from '@/services/wallet/get-wallet'
 import { DashboardContent } from './_components/dashboard-content'
+
 
 const DashboardPage = async () => {
   logger.info('DashboardPage called')
@@ -15,14 +15,11 @@ const DashboardPage = async () => {
   }
 
   try {
-    const userData = await getUserData(session?.user?.id)
-    const publicKey = userData.data?.user?.public_key
-    const walletData = await getWalletData(session?.user?.id, publicKey)
+    const userId = session?.user?.id
+    const walletData = await getWalletData(userId)
 
     return (
-      <>
-        <DashboardContent walletData={walletData} />
-      </>
+      <DashboardContent initialWalletData={walletData} userId={session?.user?.id as string} />
     )
   } catch (error) {
     return (
