@@ -315,9 +315,9 @@ export default function ChatList() {
         ))}
 
         {isBotReplyLoading ||
-        isMutating ||
-        isMessagesRefetching ||
-        isMessagesFetching ? (
+          isMutating ||
+          isMessagesRefetching ||
+          isMessagesFetching ? (
           <>
             <ChatItemContainer align={"right"}>
               <ChatItemBody className={"max-w-[80%] gap-2"}>

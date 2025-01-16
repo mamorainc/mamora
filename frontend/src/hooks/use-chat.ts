@@ -3,12 +3,17 @@ import logger from "@/lib/logger"
 import { useChatStore } from "@/stores/use-chat"
 import { CreateChatResponse, Message, SendMessageDto, SendMessageResponse } from "@/types/chat"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { useSession } from "next-auth/react"
 
 export function useCreateChat() {
     return useMutation({
-        mutationFn: async () => {
+        mutationFn: async ({ userId }: { userId: string }) => {
             const response = await api.post<CreateChatResponse>('/api/v1/chat', {
                 withCredentials: true
+            }, {
+                headers: {
+                    'x-user-id': userId
+                }
             })
             return response.data
         },
@@ -23,14 +28,20 @@ export function useCreateChat() {
 }
 
 export const useGetMessagesByChatId = (id?: string) => {
+    const { data: session } = useSession()
+    const userId = session?.user?.id
     const chatId = useChatStore((state) => state.id)
     return useQuery({
         queryKey: ['messages', { chatId: id || chatId }],
         queryFn: async () => {
-            const response = await api.get<Message[]>(`/api/v1/chat/${id || chatId}`)
+            const response = await api.get<Message[]>(`/api/v1/chat/${id || chatId}`, {
+                headers: {
+                    'x-user-id': userId
+                }
+            })
             return response.data
         },
-        enabled: !!id || !!chatId,
+        enabled: !!id || !!chatId || !!userId,
         select: (data) => {
             return data.map((item) => ({
                 ...item,

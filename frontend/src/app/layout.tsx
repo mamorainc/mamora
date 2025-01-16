@@ -7,6 +7,7 @@ import { AuthWrapper } from "@/components/auth-wrapper";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthSessionProvider } from "@/providers/session";
 import { Session } from "next-auth";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Mamora",
@@ -33,12 +34,15 @@ export default function RootLayout({
           <AuthSessionProvider session={session}>
             <TanstackReactQueryProvider>
               <AuthWrapper>
-                <TooltipProvider>{children}</TooltipProvider>
+                <TooltipProvider>
+                  <Suspense fallback={null}>
+                    {children}
+                  </Suspense>
+                </TooltipProvider>
                 <Toaster />
               </AuthWrapper>
             </TanstackReactQueryProvider>
           </AuthSessionProvider>
-
         </ThemeProvider>
       </body>
     </html>

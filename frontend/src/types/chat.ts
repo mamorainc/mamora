@@ -1,3 +1,14 @@
+export interface Chat {
+  id: string;
+  title: string;
+  created_at: Date;
+}
+
+export interface FormattedChat extends Omit<Chat, 'created_at'> {
+  created_at: string;
+}
+
+
 export interface CreateChatResponse {
   chatId: string
 }

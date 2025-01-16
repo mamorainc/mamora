@@ -3,5 +3,6 @@ export const API_CONFIG = {
     version: 'v1',
     endpoints: {
         wallet: '/user/wallet',
+        chats: "/chat"
     },
 } as const;

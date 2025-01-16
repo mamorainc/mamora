@@ -9,8 +9,8 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { NavGroup } from "./nav-group";
-import { sidebarData } from "./data/sidebar-data";
+import { NavGroup } from "../nav-group";
+import { sidebarData } from "../data/sidebar-data";
 import { Logo } from "@/components/logo";
 import { useGetChats } from "@/hooks/use-chat";
 import { Info } from "lucide-react";
@@ -29,6 +29,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         {isChatsLoading ? (
           <SidebarMenu>
+            <SidebarMenuItem className="w-[60%]">
+              <SidebarMenuSkeleton />
+            </SidebarMenuItem>
             {Array.from({ length: 10 }).map((_, index) => (
               <SidebarMenuItem key={index}>
                 <SidebarMenuSkeleton />

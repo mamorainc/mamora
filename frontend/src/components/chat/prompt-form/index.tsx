@@ -14,9 +14,13 @@ import { useSendMessage } from "@/hooks/use-chat";
 import { useChatStore } from "@/stores/use-chat";
 import logger from "@/lib/logger";
 import { Input } from "@/components/ui/input";
+import { useIsFetching } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useParams } from "next/navigation";
 
 export function PromptForm() {
-  const chatId = useChatStore((state) => state.id);
+  // const chatId = useChatStore((state) => state.id);
+  const { id: chatId } = useParams()
   const setBotReplyId = useChatStore((state) => state.setBotReplyId);
   const form = useForm<PromptformValues>({
     resolver: zodResolver(promptformSchema),
@@ -44,6 +48,14 @@ export function PromptForm() {
       console.log(error);
     }
   };
+
+
+  const isChatLoading = useIsFetching({ queryKey: ['messages', { chatId }] });
+
+
+  if (isChatLoading) return (
+    <Skeleton className="w-full h-20" />
+  )
 
   return (
     <>

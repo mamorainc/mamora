@@ -22,6 +22,7 @@ import { useCreateChat, useSendMessage } from "@/hooks/use-chat";
 import { useChatStore } from "@/stores/use-chat";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { getSession } from "next-auth/react";
 
 export function CreateChatForm() {
   const queryClient = useQueryClient();
@@ -44,7 +45,13 @@ export function CreateChatForm() {
 
   const handleSubmit = async (data: MessageFormData) => {
     try {
-      const chat = await createChat();
+      const session = await getSession();
+      const userId = session?.user?.id;
+      if (!userId) {
+        alert("Please login to create a chat");
+        return;
+      }
+      const chat = await createChat({ userId });
       setId(chat.chatId);
       const message = await sendMessage({
         chatId: chat.chatId,

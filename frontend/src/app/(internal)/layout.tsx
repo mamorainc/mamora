@@ -2,49 +2,46 @@
 import Cookies from "js-cookie";
 import { cn } from "@/lib/utils";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/layouts/internal/app-sidebar";
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 import { Header } from "@/components/layouts/internal/header";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Main } from "@/components/layouts/internal";
 import { ProfileDropdown } from "@/components/profile-dropdown";
 import { useSession } from "next-auth/react";
+import { AppSidebar } from "@/components/layouts/internal/app-sidebar";
 
 export default function InternalLayout({ children }: { children: ReactNode }) {
   const defaultOpen = Cookies.get("sidebar:state") !== "false";
   const { data: session, status } = useSession();
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <AppSidebar />
-          <div
-            id="content"
-            className={cn(
-              "ml-auto w-full max-w-full",
-              "peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon))]",
-              "peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width))]",
-              "transition-[width] duration-200 ease-linear",
-              "flex h-svh flex-col",
-            )}
-          >
-            <Header sticky>
-              {/* <Search /> */}
-              <div className="ml-auto flex items-center space-x-4">
-                <div className="hidden">
-                  {JSON.stringify(session)}
-                  <br />
-                  {JSON.stringify(status)}
-                </div>
-
-                <ThemeToggle className="hidden md:flex" />
-                <ProfileDropdown />
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <AppSidebar />
+        <div
+          id="content"
+          className={cn(
+            "ml-auto w-full max-w-full",
+            "peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon))]",
+            "peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width))]",
+            "transition-[width] duration-200 ease-linear",
+            "flex h-svh flex-col",
+          )}
+        >
+          <Header sticky>
+            <div className="ml-auto flex items-center space-x-4">
+              <div className="hidden">
+                {JSON.stringify(session)}
+                <br />
+                {JSON.stringify(status)}
               </div>
-            </Header>
-            <Main fixed>{children}</Main>
-          </div>
-        </SidebarProvider>
-      </Suspense>
+
+              <ThemeToggle className="hidden md:flex" />
+              <ProfileDropdown />
+            </div>
+          </Header>
+          <Main fixed>{children}</Main>
+        </div>
+      </SidebarProvider>
     </>
   );
 }
