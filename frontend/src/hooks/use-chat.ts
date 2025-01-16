@@ -55,10 +55,15 @@ export const useGetMessagesByChatId = (id?: string) => {
 }
 
 export const useSendMessage = () => {
+    const { data: session } = useSession()
+    const userId = session?.user?.id
     return useMutation({
         mutationFn: async (data: SendMessageDto) => {
             const response = await api.post<SendMessageResponse>(`/api/v1/chat/send-message`, data, {
-                withCredentials: true
+                withCredentials: true,
+                headers: {
+                    'x-user-id': userId
+                }
             })
             return response.data
         },
