@@ -1,7 +1,5 @@
-"use server";
-
-import { revalidatePath } from "next/cache";
-
+"use server"
+import { revalidateTag } from "next/cache"
 export async function refreshDashboard() {
-  revalidatePath("/(internal)/dashboard", "page");
+    return revalidateTag("wallet")
 }

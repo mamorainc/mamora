@@ -4,17 +4,15 @@ import { Button } from "@/components/ui/button"
 import { RefreshCcw } from "lucide-react"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from 'next/navigation'
+import { refreshDashboard } from '@/actions/refresh-dashboard'
 
 export function RefreshButton() {
-  const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
 
   const handleRefresh = async () => {
     startTransition(() => {
-      router.refresh()
-      // await queryClient.invalidateQueries({ queryKey: ['walletData'] })
+      refreshDashboard()
       toast({
         title: "Success",
         description: "Dashboard data has been refreshed.",

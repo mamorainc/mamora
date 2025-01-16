@@ -2,8 +2,8 @@ import React from 'react'
 import { auth } from '@/lib/auth'
 import logger from '@/lib/logger'
 import { redirect } from 'next/navigation'
-import { getWalletData } from '@/services/wallet/get-wallet'
 import { DashboardContent } from './_components/dashboard-content'
+import { WalletService } from '@/services/wallet'
 
 
 const DashboardPage = async () => {
@@ -16,7 +16,8 @@ const DashboardPage = async () => {
 
   try {
     const userId = session?.user?.id
-    const walletData = await getWalletData(userId)
+    const walletService = new WalletService(userId!);
+    const walletData = await walletService.getWalletData("mainnet");
 
     return (
       <DashboardContent initialWalletData={walletData} userId={session?.user?.id as string} />

@@ -13,7 +13,7 @@ interface DashboardContentProps {
 export function DashboardContent({ initialWalletData }: DashboardContentProps) {
   const walletData = initialWalletData
   // const { data: walletData } = useQuery({
-  //   queryKey: ['walletData'],
+  //   queryKey: ['walletData', userId],
   //   queryFn: () => getWalletData(userId),
   //   initialData: initialWalletData,
   //   enabled: !!userId,
